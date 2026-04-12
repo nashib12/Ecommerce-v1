@@ -1,0 +1,26 @@
+[
+  {
+    "title": "The Alpaca Waffle-Stitch Polo",
+    "tag": "cardigan",
+    "productImage": "/Images/ProductImg/card1.webp",
+    "productCover": "/Images/ProductImg/card2.webp",
+    "slug": "",
+    "price": "125.00"
+  },
+  {
+    "title": "The High-Ankle Glove Boot in ReKint",
+    "tag": "best sellers",
+    "productImage": "/Images/ProductImg/card3.webp",
+    "productCover": "/Images/ProductImg/card4.webp",
+    "slug": "",
+    "price": "140.00"
+  },
+  {
+    "title": "The Oversized Alpaca Crew",
+    "tag": "denim",
+    "productImage": "/Images/ProductImg/card5.webp",
+    "productCover": "/Images/ProductImg/card6.webp",
+    "slug": "",
+    "price": "98.00"
+  }
+]

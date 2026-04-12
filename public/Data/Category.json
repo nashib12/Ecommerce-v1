@@ -1,0 +1,68 @@
+[
+  { "id": "all-category", "value": "All Categories", "parent_id" : null, "slug" : "" },
+  { "id": "best-seller", "value": "Best Seller", "parent_id" : null, "slug" : "" },
+  {
+    "id": "trending",
+    "value": "Trending This Week",
+    "parent_id" : null,
+    "subCategory": [
+      {
+        "id": 1,
+        "value": "Shoes"
+      },
+      {
+        "id": 2,
+        "value": "Bags"
+      }
+    ], "slug" : ""
+  },
+  { "id": "back-in-stock", "value": "Back In Stock", "parent_id" : null, "slug" : "" },
+  { "id": "new-arrivals", "value": "New Arrivals", "parent_id" : null, "slug" : "" },
+  {
+    "id": "men-clothing",
+    "value": "Men's Clothing",
+    "parent_id" : null,
+    "subCategory": [
+      {
+        "id": 1,
+        "value": "Shirts"
+      },
+      {
+        "id": 2,
+        "value": "Jacket"
+      }
+    ], "slug" : ""
+  },
+  {
+    "id": "women-clothing",
+    "value": "Women's Clothing",
+    "parent_id" : null,
+    "subCategory": [
+      {
+        "id": 1,
+        "value": "Coat"
+      },
+      {
+        "id": 2,
+        "value": "Jwellery"
+      }
+    ], "slug" : ""
+  },
+  {
+    "id": "shoes-accessories",
+    "value": "Shoes & Accessories",
+    "parent_id" : null,
+    "subCategory": [
+      {
+        "id": 1,
+        "value": "Goldstar"
+      },
+      {
+        "id": 2,
+        "value": "Bagsitem"
+      }
+    ], "slug" : ""
+  },
+  { "id": "easy-outfit", "value": "Easy Outfit", "parent_id" : null, "slug" : "" },
+  { "id": "back-to-work", "value": "Back To Work Wear", "parent_id" : null, "slug" : "" }
+]

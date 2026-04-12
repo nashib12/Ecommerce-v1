@@ -1,0 +1,72 @@
+[
+  {
+    "catgeory": "Boots",
+    "images": "/Images/CategoryImg/product.webp",
+    "slug": ""
+  },
+  {
+    "catgeory": "Accessories",
+    "images": "/Images/CategoryImg/product1.webp",
+    "slug": ""
+  },
+  {
+    "catgeory": "Men's Coats",
+    "images": "/Images/CategoryImg/product2.jpg",
+    "slug": ""
+  },
+  {
+    "catgeory": "Leather Bags",
+    "images": "/Images/CategoryImg/product3.webp",
+    "slug": ""
+  },
+  {
+    "catgeory": "Socks",
+    "images": "/Images/CategoryImg/product4.webp",
+    "slug": ""
+  },
+  {
+    "catgeory": "Denim",
+    "images": "/Images/CategoryImg/product5.webp",
+    "slug": ""
+  },
+  {
+    "catgeory": "Outerwear",
+    "images": "/Images/CategoryImg/product6.webp",
+    "slug": ""
+  },
+  {
+    "catgeory": "Sweaters",
+    "images": "/Images/CategoryImg/product7.webp",
+    "slug": ""
+  },
+  {
+    "catgeory": "Leather Shoes",
+    "images": "/Images/CategoryImg/product8.webp",
+    "slug": ""
+  },
+  {
+    "catgeory": "Sneakers",
+    "images": "/Images/CategoryImg/product9.webp",
+    "slug": ""
+  },
+  {
+    "catgeory": "Backpacks",
+    "images": "/Images/CategoryImg/product10.webp",
+    "slug": ""
+  },
+  {
+    "catgeory": "Women's Pants",
+    "images": "/Images/CategoryImg/product11.webp",
+    "slug": ""
+  },
+  {
+    "catgeory": "Gift For Him",
+    "images": "/Images/CategoryImg/product12.webp",
+    "slug": ""
+  },
+  {
+    "catgeory": "Cardigan",
+    "images": "/Images/CategoryImg/product14.webp",
+    "slug": ""
+  }
+]
