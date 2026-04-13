@@ -115,6 +115,7 @@ export function ContextProvider({ children }) {
   const [profileEdit, setProfileEdit] = useState(false);
   const [passwordEdit, setPasswordEdit] = useState(false);
   const [ addCategory, setAddCategory] = useState(false);
+  const [ addProduct, setAddProduct ] = useState(false);
 
   const subTotal = useMemo(() => {
     return cartItems.reduce((total, items) => total + items.subTotal, 0);
@@ -205,7 +206,8 @@ export function ContextProvider({ children }) {
         subTotal,
         loginModal,
         setLoginModal,
-        wishList,profileEdit, setProfileEdit, passwordEdit, setPasswordEdit, addCategory, setAddCategory
+        wishList,profileEdit, setProfileEdit, passwordEdit, setPasswordEdit, addCategory, setAddCategory,
+        addProduct, setAddProduct,
       }}
     >
       {" "}

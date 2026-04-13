@@ -15,7 +15,7 @@ import StoreVisit from '../../Components/AdminDashboard/StoreVisit'
 import DataContext from '../../Context/DataContext'
 
 function AdminDashboard() {
-    const { setAddCategory} = useContext(DataContext);
+    const { setAddCategory, setAddProduct} = useContext(DataContext);
 
   return (
     <div className='bg-[#f5f5f5]'>  
@@ -31,7 +31,7 @@ function AdminDashboard() {
                     <span>1 April,2026 - 9 April, 2026</span>
                     <button className='cursor-pointer'><img src={CalendarIcon} alt="claendar button icon" className='h-6 w-6 object-contain invert' /></button>
                 </div>
-                <div className='cursor-pointer h-12 px-4 w-fit rounded-sm bg-emerald-700 text-white overflow-hidden flex items-center gap-3.5'>
+                <div onClick={() => setAddProduct(true)} className='cursor-pointer h-12 px-4 w-fit rounded-sm bg-emerald-700 text-white overflow-hidden flex items-center gap-3.5'>
                     <button className='cursor-pointer'><img src={PlusIcon} alt="plus button icon" className='h-4 w-4 object-contain invert' /></button>
                     <span>Add Products</span>
                 </div>

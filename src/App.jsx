@@ -22,6 +22,7 @@ import Checkout from "./Pages/Checkout";
 import AdminDashboard from "./Pages/Dashboard/AdminDashboard";
 import AdminLogin from "./Components/AdminDashboard/AdminLogin";
 import AddCategory from "./Components/Modal/AddCategory";
+import AddProduct from "./Components/Modal/AddProduct";
 
 function App() {
   return (
@@ -79,6 +80,7 @@ function Layout() {
             />
           </Routes>
           <AddCategory />
+          <AddProduct />
         </>
       )}
     </>
