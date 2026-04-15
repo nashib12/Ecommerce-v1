@@ -27,7 +27,6 @@ const reducer = (state, action) => {
         quantity: state.quantity > 0 ? state.quantity - 1 : state.quantity,
       };
     case "products/clearItem":
-      console.log("button clicked");
       return {
         ...state,
         cartItems: state.cartItems.filter(
@@ -95,6 +94,11 @@ const reducer = (state, action) => {
           return item;
         }),
       };
+    case "wishlist/addItems":
+      console.log(action.payload);
+      return {...state, wishList: state.wishList[curr => [...curr, action.payload]]};
+    case "wishlist/removeItems":
+      return
     default:
       return state;
   }
@@ -116,6 +120,7 @@ export function ContextProvider({ children }) {
   const [passwordEdit, setPasswordEdit] = useState(false);
   const [ addCategory, setAddCategory] = useState(false);
   const [ addProduct, setAddProduct ] = useState(false);
+  const [ updateAddress, setUpdateAddress ] = useState(false);
 
   const subTotal = useMemo(() => {
     return cartItems.reduce((total, items) => total + items.subTotal, 0);
@@ -207,7 +212,7 @@ export function ContextProvider({ children }) {
         loginModal,
         setLoginModal,
         wishList,profileEdit, setProfileEdit, passwordEdit, setPasswordEdit, addCategory, setAddCategory,
-        addProduct, setAddProduct,
+        addProduct, setAddProduct, updateAddress, setUpdateAddress,
       }}
     >
       {" "}

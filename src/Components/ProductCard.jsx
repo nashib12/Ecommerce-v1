@@ -17,7 +17,7 @@ function ProductCard({
   discount,
   slug
 }) {
-  const { setOpenModal} = useContext(DataContext);
+  const { dispatch } = useContext(DataContext);
 
   return (
     <div className="h-96 md:h-106 w-fit md:w-60 border-2 border-gray-300 px-2 py-2">
@@ -32,7 +32,7 @@ function ProductCard({
         <img
           src={image}
           alt="product image"
-          className="mb-3 h-40 md:h-50 w-full object-cover group-hover:hidden"
+          className="mb-3 h-4((0 md:h-50 w-full object-cover group-hover:hidden"
         />
         <img
           src={coverImage}
@@ -40,6 +40,7 @@ function ProductCard({
           className="mb-3 h-40 md:h-50 w-full object-cover hidden group-hover:block"
         />
         <button
+          onClick={() => dispatch({type: "wishlist/addItems", payload: "Item added"})}
           data-tooltip-id={`wishlist-${id}`}
           className="absolute top-4 right-2 hidden h-9 w-9 rounded-full bg-white group-hover:flex items-center justify-center cursor-pointer"
         >
@@ -53,7 +54,6 @@ function ProductCard({
           <p>Add to wishlist</p>
         </Tooltip>
         <button
-          onClick={() => setOpenModal(true)}
           data-tooltip-id={`details-${id}`}
           className="absolute top-16 right-2 hidden h-9 w-9 rounded-full bg-white group-hover:flex items-center justify-center cursor-pointer"
         >

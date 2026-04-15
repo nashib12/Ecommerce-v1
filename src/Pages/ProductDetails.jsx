@@ -1,5 +1,11 @@
 import useEmblaCarousel from "embla-carousel-react";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import ProductDetailImg1 from "../../public/Images/ProductImg/Details/p1.webp";
 import ProductDetailImg2 from "../../public/Images/ProductImg/Details/p2.jpg";
 import ProductDetailImg3 from "../../public/Images/ProductImg/Details/p3.jpg";
@@ -91,22 +97,44 @@ function ProductDetails() {
     { id: 5, img: PaymentImg5 },
   ];
   const { slug } = useParams();
-  const { featuredProduct, dispatch, quantity, productColor, productSize } = useContext(DataContext);
-  const [ selectedProduct, setSelectedProduct ] = useState({});
-const navigate = useNavigate();
-  useEffect(() => {
-    const data = featuredProduct.find(prev => prev.slug === slug );
-    setSelectedProduct(data);
-  }, [slug]);
+  const { featuredProduct, dispatch, quantity, productColor, productSize } =
+    useContext(DataContext);
 
-  const handleProductAdd = ({ color, size, quantity, id, productName, img, price, buttonClicked}) => {
-    if(!color || !size || quantity <= 0) return;
-    dispatch({type:'products/addToCart', payload:{productId: id, productColor: color, productSize: size, quantity, productName:productName, productImage:img, productPrice:price, subTotal: quantity * price}});
-    if(buttonClicked === "buyNow"){
-      navigate('/check-out');
+  const navigate = useNavigate();
+  const selectedProduct = useMemo(() => {
+    if (!featuredProduct || featuredProduct.length === 0) return null;
+    return featuredProduct?.find((prev) => prev.slug === slug);
+  }, [slug, featuredProduct]);
+
+  const handleProductAdd = ({
+    color,
+    size,
+    quantity,
+    id,
+    productName,
+    img,
+    price,
+    buttonClicked,
+  }) => {
+    if (!color || !size || quantity <= 0) return;
+    dispatch({
+      type: "products/addToCart",
+      payload: {
+        productId: id,
+        productColor: color,
+        productSize: size,
+        quantity,
+        productName: productName,
+        productImage: img,
+        productPrice: price,
+        subTotal: quantity * price,
+      },
+    });
+    if (buttonClicked === "buyNow") {
+      navigate("/check-out");
     }
-  }
-
+  };
+  if (!selectedProduct) return null;
   return (
     <>
       <section
@@ -202,7 +230,19 @@ const navigate = useNavigate();
               </div>
               <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6 md:mb-12">
                 <h2 className="text-xl md:text-3xl text-gray-500 tracking-wider">
-                  {selectedProduct.originalPrice ? (<><span className="line-through">$ {selectedProduct.originalPrice}</span> <span className="text-red-500"> $ {selectedProduct.price}</span></>) : (<span>$ {selectedProduct.price}</span>)}
+                  {selectedProduct.originalPrice ? (
+                    <>
+                      <span className="line-through">
+                        $ {selectedProduct.originalPrice}
+                      </span>{" "}
+                      <span className="text-red-500">
+                        {" "}
+                        $ {selectedProduct.price}
+                      </span>
+                    </>
+                  ) : (
+                    <span>$ {selectedProduct.price}</span>
+                  )}
                 </h2>
                 <div className="flex items-center gap-4">
                   <StarRating />
@@ -212,42 +252,62 @@ const navigate = useNavigate();
               <div className="mb-6">
                 <p className="text-lg md:text-2xl mb-3">Color:</p>
                 <div className="flex gap-3">
-                   { selectedProduct.color ? selectedProduct.color.map((item) => (
-                    <>         
-                  <button key={item}
-                    data-tooltip-id={item}
-                    onClick={() => dispatch({ type: 'products/setColor', payload: item})}
-                    className={`cursor-pointer transition-transform duration-300 ease-in hover:scale-95 h-10 w-10 rounded-full bg-${item}-600 ${item === productColor ? "border-2" : "border-0" }`}
-                  ></button>
-                  <Tooltip id={item}>
-                    <span>{item}</span>
-                  </Tooltip>
-                    </>
-                  )) : ""}
+                  {selectedProduct.color
+                    ? selectedProduct.color.map((item) => (
+                        <>
+                          <button
+                            key={item}
+                            data-tooltip-id={item}
+                            onClick={() =>
+                              dispatch({
+                                type: "products/setColor",
+                                payload: item,
+                              })
+                            }
+                            style={{ background: item }}
+                            className={`cursor-pointer transition-transform duration-300 ease-in hover:scale-95 h-10 w-10 rounded-full ${item === productColor ? "border-2" : "border-0"}`}
+                          ></button>
+                          <Tooltip id={item}>
+                            <span>{item}</span>
+                          </Tooltip>
+                        </>
+                      ))
+                    : ""}
                 </div>
               </div>
               <div className="mb-6">
                 <p className="text-lg md:text-2xl mb-3">Size:</p>
                 <div className="flex gap-3">
-                  { selectedProduct.size ? selectedProduct.size.map((item) => (
-                    <>    
-                    <button key={item}
-                      data-tooltip-id={item}
-                      onClick={() => dispatch({ type: 'products/setSize', payload: item})}
-                      className={`flex uppercase items-center justify-center h-10 w-10 md:h-12 md:w-12 ${ item === productSize ? "border-3 border-black" : "border border-gray-500"} hover:border-black rounded-md cursor-pointer md:text-lg`}
-                    >
-                      {item}
-                    </button>
-                    <Tooltip id={item}>{item}</Tooltip>
-                    </>
-                  )) : ""}
+                  {selectedProduct.size
+                    ? selectedProduct.size.map((item) => (
+                        <>
+                          <button
+                            key={item}
+                            data-tooltip-id={item}
+                            onClick={() =>
+                              dispatch({
+                                type: "products/setSize",
+                                payload: item,
+                              })
+                            }
+                            className={`flex uppercase items-center justify-center h-10 w-10 md:h-12 md:w-12 ${item === productSize ? "border-3 border-black" : "border border-gray-500"} hover:border-black rounded-md cursor-pointer md:text-lg`}
+                          >
+                            {item}
+                          </button>
+                          <Tooltip id={item}>{item}</Tooltip>
+                        </>
+                      ))
+                    : ""}
                 </div>
               </div>
               <div className="mb-6">
                 <p className="text-lg md:text-2xl mb-3">Quantity</p>
                 <div className="grid grid-cols-3 md:grid-cols-4 gap-3 md:gap-6 mb-6 h-12">
                   <div className="grid grid-cols-3 bg-gray-100 border text-xl h-full items-center">
-                    <button onClick={() => dispatch({ type: "products/removeItem"})} className="flex items-center justify-center border-r cursor-pointer h-full">
+                    <button
+                      onClick={() => dispatch({ type: "products/removeItem" })}
+                      className="flex items-center justify-center border-r cursor-pointer h-full"
+                    >
                       {" "}
                       <img
                         src={MinusImg}
@@ -256,7 +316,10 @@ const navigate = useNavigate();
                       />
                     </button>
                     <span className="text-center">{quantity}</span>
-                    <button onClick={() => dispatch({ type: "products/addItem"})} className="flex items-center justify-center border-l h-full cursor-pointer">
+                    <button
+                      onClick={() => dispatch({ type: "products/addItem" })}
+                      className="flex items-center justify-center border-l h-full cursor-pointer"
+                    >
                       <img
                         src={PlusImg}
                         alt="minus button icon"
@@ -264,15 +327,41 @@ const navigate = useNavigate();
                       />
                     </button>
                   </div>
-                  <button onClick={() => handleProductAdd({size:productSize, color:productColor, id:selectedProduct.id, quantity, productName:selectedProduct.title, img:selectedProduct.productImage, price:selectedProduct.price})} className={`col-span-2 md:col-span-3 bg-gray-200 w-full h-full ${quantity <= 0 ? "cursor-not-allowed" : "cursor-pointer"}  flex items-center justify-center text-lg tracking-wide`}>
+                  <button
+                    onClick={() =>
+                      handleProductAdd({
+                        size: productSize,
+                        color: productColor,
+                        id: selectedProduct.id,
+                        quantity,
+                        productName: selectedProduct.title,
+                        img: selectedProduct.productImage,
+                        price: selectedProduct.price,
+                      })
+                    }
+                    className={`col-span-2 md:col-span-3 bg-gray-200 w-full h-full ${quantity <= 0 ? "cursor-not-allowed" : "cursor-pointer"}  flex items-center justify-center text-lg tracking-wide`}
+                  >
                     Add to Cart
                   </button>
                 </div>
-               
-                  <button onClick={() => handleProductAdd({buttonClicked:"buyNow" ,size:productSize, color:productColor, id:selectedProduct.id, quantity, productName:selectedProduct.title, img:selectedProduct.productImage, price:selectedProduct.price})} className={`w-full h-12 flex items-center justify-center bg-black text-white ${quantity <= 0 ? "cursor-not-allowed" : "cursor-pointer hover:bg-gray-200 hover:text-black"}  text-xl tracking-wide transition-colors duration-300 ease-in-out`}>
-                    Buy Now
-                  </button>
-                
+
+                <button
+                  onClick={() =>
+                    handleProductAdd({
+                      buttonClicked: "buyNow",
+                      size: productSize,
+                      color: productColor,
+                      id: selectedProduct.id,
+                      quantity,
+                      productName: selectedProduct.title,
+                      img: selectedProduct.productImage,
+                      price: selectedProduct.price,
+                    })
+                  }
+                  className={`w-full h-12 flex items-center justify-center bg-black text-white ${quantity <= 0 ? "cursor-not-allowed" : "cursor-pointer hover:bg-gray-200 hover:text-black"}  text-xl tracking-wide transition-colors duration-300 ease-in-out`}
+                >
+                  Buy Now
+                </button>
               </div>
               <div className="mb-6 flex items-center gap-6 md:gap-12 text-lg">
                 <button className="cursor-pointer flex items-center gap-2">
@@ -362,8 +451,15 @@ const navigate = useNavigate();
               Questions
             </button>
           </div>
-          {detailsId === "description" && <Description description={selectedProduct.description} />}
-          {detailsId === "additional" && <AdditionalInfo size={selectedProduct.size} color={selectedProduct.color} />}
+          {detailsId === "description" && (
+            <Description description={selectedProduct.description} />
+          )}
+          {detailsId === "additional" && (
+            <AdditionalInfo
+              size={selectedProduct.size}
+              color={selectedProduct.color}
+            />
+          )}
           {detailsId === "reviews" && <Review />}
           {detailsId === "questions" && <Questions />}
         </div>
@@ -374,21 +470,23 @@ const navigate = useNavigate();
 
 export default ProductDetails;
 
-function AdditionalInfo({size, color}) {
+function AdditionalInfo({ size, color }) {
   return (
     <ul className="text-lg leading-8">
       <li className="mb-3 text-gray-400">
         Size:{" "}
-        {size.map(item => (
-        <span key={item} className="text-black font-semibold">
-         {item},&nbsp;
-        </span>
+        {size.map((item) => (
+          <span key={item} className="text-black font-semibold">
+            {item},&nbsp;
+          </span>
         ))}
       </li>
       <li className=" text-gray-400">
         Color:{" "}
-        {color.map(item => (
-        <span key={item} className="text-black font-semibold">{item},&nbsp;</span>
+        {color.map((item) => (
+          <span key={item} className="text-black font-semibold">
+            {item},&nbsp;
+          </span>
         ))}
       </li>
     </ul>

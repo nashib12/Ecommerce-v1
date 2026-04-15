@@ -23,6 +23,7 @@ import AdminDashboard from "./Pages/Dashboard/AdminDashboard";
 import AdminLogin from "./Components/AdminDashboard/AdminLogin";
 import AddCategory from "./Components/Modal/AddCategory";
 import AddProduct from "./Components/Modal/AddProduct";
+import AddressModal from "./Components/Modal/AddressModal";
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function Layout() {
           <LoginModal />
           <ProfileEditModal />
           <ChangePasswordModal />
+          <AddressModal />
         </>
       ) : (
         <>

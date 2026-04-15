@@ -24,7 +24,7 @@ function ContactUs() {
     >
       <div className="md:grid grid-cols-2 gap-12">
         {/* contact form */}
-        <div className="flex justify-center w-full">
+        <div className="flex justify-center w-full mb-6 md:mb-0">
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col w-full md:w-110"
@@ -82,8 +82,10 @@ function ContactUs() {
                 alt="telephone icon"
                 className="h-6 w-6 object-contain"
               />
-              <a href="tel:980-0000000">+977 980-0000000</a>
+             <div className="flex flex-col md:flex-row gap-1.5">
+               <a href="tel:980-0000000">+977 980-0000000</a>
               <a href="tel:980-0000001">+977 980-0000001</a>
+             </div>
             </div>
             <div className="flex items-center gap-3 mb-9">
               <img
@@ -94,7 +96,7 @@ function ContactUs() {
               <a href="mailto:info@megastore.com">info@megastore.com</a>
             </div>
             <div className="border h-0.5 w-full bg-black rounded-full mb-3"/>
-            <h2 className="text-3xl tracking-wider font-semibold mb-6 leading-10">
+            <h2 className="text-xl md:text-3xl tracking-wider font-semibold mb-6 md:leading-10">
               Connect with us through our Social Media Account
             </h2>
             <div className="flex items-center gap-6">

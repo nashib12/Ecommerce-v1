@@ -54,7 +54,7 @@ function Trending() {
             <div className='grid grid-cols-2 md:grid-cols-3 gap-6'>
                 {weeklyData.map(item => (
                     <div key={item.title}>
-                        <ProductCard id={item.title} image={item.productImage} coverImage={item.productCover} price={item.price} tag={item.tag} />
+                        <ProductCard id={item.title} image={item.productImage} coverImage={item.productCover} price={item.price} tag={item.tag} slug={item.slug} />
                     </div>
                 ))}
             </div>

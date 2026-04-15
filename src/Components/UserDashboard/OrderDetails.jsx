@@ -10,8 +10,8 @@ function OrderDetails({ setDashboardNavigation }) {
         <table className='table-fixed w-full mb-6'>
             <thead>
                 <tr className='h-12 border-b text-lg'>
-                    <th>Product</th>
-                    <th>Total</th>
+                    <th>Description</th>
+                    <th>Pricing Details</th>
                 </tr>
             </thead>
             <tbody>

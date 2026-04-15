@@ -28,7 +28,7 @@ function Navbar() {
   const [subcategory, setSubcategory] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const { category, setLoginModal } = useContext(DataContext);
+  const { category, setLoginModal, cartItems } = useContext(DataContext);
   const location = useLocation();
   const lenis = useLenis();
 
@@ -138,13 +138,16 @@ function Navbar() {
                 </div>
               </div>
               <div className="flex gap-6 items-center">
-                <Link to={'/cart-details'}>   
+              <div className="relative">
+                  <Link to={'/cart-details'}>   
                 <img
                   src={ShoppingBagImg}
                   alt="Shopping Bag"
                   className="h-9 w-9 0bject-contain"
                 />
                 </Link>
+                {cartItems.length === 0 ? "" : (<div className="absolute -top-2 -right-2 bg-red-600 h-6 w-6 flex items-center justify-center rounded-full text-sm text-white">{cartItems.length}</div>)}
+              </div>
                 <button onClick={() => {setLoginModal(true)}} className="w-28 h-11 border uppercase tracking-wider bg-black text-white cursor-pointer">
                   Login
                 </button>

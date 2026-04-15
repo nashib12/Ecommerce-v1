@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DataContext from "../Context/DataContext";
 import PlusIcon from "../../public/Icons/plus.png";
 import MinusIcon from "../../public/Icons/minus.png";
@@ -24,6 +24,13 @@ function Product() {
   ];
   const [dropdownItem, setdropdownItem] = useState(sortingList[0]);
   const priceList = ["All", "$0 - $59", "$60 - $119", "$120 - $179", "$180 - $239", "$240+"]
+  const [filteredProduct, setFilteredProduct] = useState([]);
+  const [ filter, setFilter ] = useState("");
+
+  useEffect(() => {
+    if(filter === "") return;
+    setFilteredProduct(featuredProduct.filter(item => item.tag.toLowerCase() === filter.toLowerCase() ));
+  }, [filter, featuredProduct]);
 
   return (
     <section
@@ -51,9 +58,9 @@ function Product() {
             {categoryFilter && (
               <ul className="mt-3">
                 {category.map((item) => (
-                  <li
+                  <li onClick={() => setFilter(item.value)}
                     key={item.id}
-                    className="py-2 px-4 cursor-pointer hover:bg-gray-200"
+                    className={`py-2 px-4 cursor-pointer hover:bg-gray-200 ${filter === item.value ? "bg-gray-300" : ""}`}
                   >
                     {item.value}
                   </li>
@@ -165,8 +172,21 @@ function Product() {
 
           {/* product list */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 ">
-            {featuredProduct.map((item) => (
-              <div key={item.title}>
+            { filteredProduct.length === 0 ? featuredProduct.map((item) => (
+              <ProdcutList item={item} />
+            )) : filteredProduct.map((item => <ProdcutList item={item} />))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default Product;
+
+function ProdcutList ( { item }) {
+  return (
+           <div key={item.title}>
                 <ProductCard
                   id={item.title}
                   image={item.productImage}
@@ -178,12 +198,5 @@ function Product() {
                   slug={item.slug}
                 />{" "}
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
   );
 }
-
-export default Product;

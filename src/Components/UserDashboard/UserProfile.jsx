@@ -5,7 +5,8 @@ function UserProfile() {
   const { setProfileEdit, setPasswordEdit } = useContext(DataContext);
 
   return (
-    <div>
+    <>
+    <div className="hidden md:block">
       <h2 className="font-semibold tracking-wide text-2xl mb-6">
         Account Details
       </h2>
@@ -51,8 +52,44 @@ function UserProfile() {
         <button onClick={() => setPasswordEdit(true)} className="bg-[#1A9CB7] text-white h-12 w-46  cursor-pointer tracking-wider border-2 border-[#1A9CB7] transition-colors duration-300 ease-in-out hover:bg-white hover:text-black">
           Change Password
         </button>
+      
       </div>
     </div>
+    <div className="md:hidden">
+      <h2 className="mb-3 text-lg tracking-wide font-semibold">Account Details</h2>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="bg-gray-400 flex flex-col gap-0.5 rounded-sm text-white px-2 py-1">
+            <p className="font-semibold text-lg">Full Name:</p>
+            <p>Username</p>
+        </div>
+        <div className="bg-gray-400 flex flex-col gap-0.5 rounded-sm text-white px-2 py-1">
+            <p className="font-semibold text-lg">Username:</p>
+            <p>Username</p>
+        </div>
+        <div className="bg-gray-400 flex flex-col gap-0.5 rounded-sm text-white px-2 py-1 text-sm">
+            <p className="font-semibold">Mobile Number:</p>
+            <p>+977 980-0000000</p>
+        </div>
+        <div className="bg-gray-400 flex flex-col gap-0.5 rounded-sm text-white px-2 py-1">
+            <p className="font-semibold text-lg">Gender:</p>
+            <p>Male</p>
+        </div>
+        <div className="bg-gray-400 flex flex-col gap-0.5 rounded-sm text-white px-2 py-1 col-span-2">
+            <p className="font-semibold text-lg">Email Address:</p>
+            <p>tester@gmail.com</p>
+        </div>
+      </div>
+          <button
+          className="bg-[#1A9CB7] text-white h-11 w-full my-3  text-lg tracking-wider rounded-sm"
+          onClick={() => setProfileEdit(true)}
+        >
+          Edit Profile
+        </button>
+        <button onClick={() => setPasswordEdit(true)} className="bg-[#1A9CB7] text-white h-11 w-full rounded-sm text-lg">
+          Change Password
+        </button>
+    </div>
+    </>
   );
 }
 

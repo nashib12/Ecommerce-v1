@@ -242,7 +242,7 @@ function AddProductForm({ category, setAddProduct }) {
                     value={field.value}
                     onChange={(html) => {
                       field.onChange(html);
-                      trigger("descrition");
+                      trigger("description");
                     }}
                     error={errors.description}
                   />

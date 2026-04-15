@@ -1,6 +1,6 @@
 [
   { "id": "all-category", "value": "All Categories", "parent_id" : null, "slug" : "" },
-  { "id": "best-seller", "value": "Best Seller", "parent_id" : null, "slug" : "" },
+  { "id": "best-seller", "value": "Best Sellers", "parent_id" : null, "slug" : "" },
   {
     "id": "trending",
     "value": "Trending This Week",
