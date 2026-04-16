@@ -36,6 +36,9 @@ import Review from "../Components/ProductDetails/Review";
 import Questions from "../Components/ProductDetails/Questions";
 import { useNavigate, useParams } from "react-router-dom";
 import DataContext from "../Context/DataContext";
+import { v4 as uuidV4, v1 as uuidV1 } from "uuid";
+import { toast } from "react-toastify";
+import ProductCard from "../Components/ProductCard";
 
 function ProductDetails() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -97,8 +100,15 @@ function ProductDetails() {
     { id: 5, img: PaymentImg5 },
   ];
   const { slug } = useParams();
-  const { featuredProduct, dispatch, quantity, productColor, productSize } =
-    useContext(DataContext);
+  const {
+    featuredProduct,
+    dispatch,
+    quantity,
+    productColor,
+    productSize,
+    cartItems,
+  } = useContext(DataContext);
+  const [pPrice, setPPrice] = useState(0);
 
   const navigate = useNavigate();
   const selectedProduct = useMemo(() => {
@@ -116,10 +126,13 @@ function ProductDetails() {
     price,
     buttonClicked,
   }) => {
-    if (!color || !size || quantity <= 0) return;
+    if (!color || !size || quantity <= 0) {
+      return toast.error("Choose the product color, size and quantity.");
+    }
     dispatch({
       type: "products/addToCart",
       payload: {
+        id: uuidV4(),
         productId: id,
         productColor: color,
         productSize: size,
@@ -128,13 +141,39 @@ function ProductDetails() {
         productImage: img,
         productPrice: price,
         subTotal: quantity * price,
+        orderId: `#${uuidV1()}`,
       },
     });
+    const productExist = cartItems.filter((items) => items.productId === id);
+
+    if (productExist) {
+      const productFound = productExist.find((item) => item.productColor === color && item.productSize === size ? true : false);
+      // const sizeExist = productExist.productSize === size ? true : false;
+      if (productFound ) {
+        toast.error(`${productFound.productName} already exist in the cart`);
+      } else {
+        toast.success(`${productName} successfully added to the cart`);
+      }
+    } else {
+      toast.success(`${productName} successfully added to the cart`);
+    }
+
     if (buttonClicked === "buyNow") {
       navigate("/check-out");
     }
   };
   if (!selectedProduct) return null;
+
+  const handlePriceChange = (item) => {
+    dispatch({
+      type: "products/setSize",
+      payload: item,
+    });
+
+    const priceList = selectedProduct.prices;
+    const selectedPrice = priceList.find((curr) => curr.size === item)?.price;
+    setPPrice(selectedPrice);
+  };
   return (
     <>
       <section
@@ -237,11 +276,13 @@ function ProductDetails() {
                       </span>{" "}
                       <span className="text-red-500">
                         {" "}
-                        $ {selectedProduct.price}
+                        $ {pPrice === 0 ? selectedProduct.price : pPrice}
                       </span>
                     </>
                   ) : (
-                    <span>$ {selectedProduct.price}</span>
+                    <span>
+                      $ {pPrice === 0 ? selectedProduct.price : pPrice}
+                    </span>
                   )}
                 </h2>
                 <div className="flex items-center gap-4">
@@ -284,12 +325,7 @@ function ProductDetails() {
                           <button
                             key={item}
                             data-tooltip-id={item}
-                            onClick={() =>
-                              dispatch({
-                                type: "products/setSize",
-                                payload: item,
-                              })
-                            }
+                            onClick={() => handlePriceChange(item)}
                             className={`flex uppercase items-center justify-center h-10 w-10 md:h-12 md:w-12 ${item === productSize ? "border-3 border-black" : "border border-gray-500"} hover:border-black rounded-md cursor-pointer md:text-lg`}
                           >
                             {item}
@@ -336,7 +372,7 @@ function ProductDetails() {
                         quantity,
                         productName: selectedProduct.title,
                         img: selectedProduct.productImage,
-                        price: selectedProduct.price,
+                        price: pPrice,
                       })
                     }
                     className={`col-span-2 md:col-span-3 bg-gray-200 w-full h-full ${quantity <= 0 ? "cursor-not-allowed" : "cursor-pointer"}  flex items-center justify-center text-lg tracking-wide`}
@@ -422,7 +458,7 @@ function ProductDetails() {
       {/* description and additional info section */}
       <section
         id="product-description"
-        className="max-w-7xl mx-auto px-6 md:px-12 pb-12"
+        className="max-w-7xl mx-auto px-6 md:px-12"
       >
         <div className="md:px-12 md:py-12 md:bg-gray-100 md:shadow-md">
           <div className="flex flex-col md:flex-row gap-6 md:gap-12 text-lg md:text-xl font-semibold border-b-2 border-gray-400 mb-3 md:mb-6">
@@ -462,6 +498,31 @@ function ProductDetails() {
           )}
           {detailsId === "reviews" && <Review />}
           {detailsId === "questions" && <Questions />}
+        </div>
+      </section>
+
+      {/* related product section */}
+      <section
+        id="related products"
+        className="max-w-7xl mx-auto px-6 py-6 md:px-12 md:py-12"
+      >
+        <h2 className="text-3xl font-semibold tracking-wide mb-12">Related Products</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-0 md:gap-6">
+          {featuredProduct.slice(0, 4).map((item) => (
+            <div key={item.id}>
+              <ProductCard
+                id={item.id}
+                title={item.title}
+                image={item.itemImage}
+                coverImage={item.itemCover}
+                price={item.price}
+                tag={item.tag}
+                originalPrice={item.originalPrice}
+                discount={item.discount}
+                slug={item.slug}
+              />
+            </div>
+          ))}
         </div>
       </section>
     </>

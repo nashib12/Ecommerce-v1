@@ -1,6 +1,6 @@
 [
   {
-    "id" : 1,
+    "id": 1,
     "title": "The Woven Sweet Dreams P.J. Top",
     "tag": "back in stock",
     "productImage": "/Images/ProductImg/card1.webp",
@@ -9,10 +9,18 @@
     "price": "60.00",
     "description": "Sweet dreams are made in these. Our Woven PJs are too nice to just stay home—and so comfortable that they won’t have to. With a boxy fit and button-front closure, why not indulge in an elevated basic made of 100% cotton?",
     "color": ["red", "green", "yellow"],
-    "size": ["XS", "S", "M", "L", "XL", "XXL"]
+    "size": ["XS", "S", "M", "L", "XL", "XXL"],
+    "prices": [
+      { "size": "XS", "price": "60.00" },
+      { "size": "S", "price": "70.00" },
+      { "size": "M", "price": "80.00" },
+      { "size": "L", "price": "90.00" },
+      { "size": "XL", "price": "100.00" },
+      { "size": "XXL", "price": "110.00" }
+    ]
   },
   {
-    "id" : 2,
+    "id": 2,
     "title": "The ReNew Merino Long Liner",
     "tag": "best sellers",
     "productImage": "/Images/ProductImg/card1.webp",
@@ -23,10 +31,18 @@
     "discount": 50,
     "description": "A modern take on a military-inspired liner. Made entirely from 100% recycled polyester, the ReNew Long Liner is lightweight, packable, and perfect for easy cold-weather layering.* Plus, it features a classic crew neckline, a zip front, handy side pockets, an easy below-the-knee length, and a quilted design. Wear it as a standalone jacket or layer it under a coat for extra warmth without the weight.",
     "color": ["red", "green", "yellow"],
-    "size": ["XS", "S", "M", "L", "XL", "XXL"]
+    "size": ["XS", "S", "M", "L", "XL", "XXL"],
+    "prices": [
+      { "size": "XS", "price": "79.00" },
+      { "size": "S", "price": "89.00" },
+      { "size": "M", "price": "99.00" },
+      { "size": "L", "price": "109.00" },
+      { "size": "XL", "price": "119.00" },
+      { "size": "XXL", "price": "129.00" }
+    ]
   },
   {
-    "id" : 3,
+    "id": 3,
     "title": "The Brushed Flannel Caro Shirt",
     "tag": "best sellers",
     "productImage": "/Images/ProductImg/card1.webp",
@@ -37,10 +53,18 @@
     "discount": 40,
     "description": "Our Brushed Flannel Shirt is warm, durable, and made for supreme comfort. Our flannel fabric is a 5.8 oz cotton that’s brushed on both sides for a soft-but-abrasion-resistant finish.",
     "color": ["red", "green", "yellow"],
-    "size": ["XS", "S", "M", "L", "XL", "XXL"]
+    "size": ["XS", "S", "M", "L", "XL", "XXL"],
+    "prices": [
+      { "size": "XS", "price": "48.00" },
+      { "size": "S", "price": "58.00" },
+      { "size": "M", "price": "68.00" },
+      { "size": "L", "price": "78.00" },
+      { "size": "XL", "price": "98.00" },
+      { "size": "XXL", "price": "108.00" }
+    ]
   },
   {
-    "id" : 4,
+    "id": 4,
     "title": "The Felted Merino Half-Zip Sweater",
     "tag": "cardigan",
     "productImage": "/Images/ProductImg/card1.webp",
@@ -49,10 +73,18 @@
     "price": "145.00",
     "description": "Our first alpaca sweater. With a cool rib pattern and a crew neckline, the Oversized Alpaca Crew has all the warmth of a cozy winter knit with a plush, airy feel. We love alpaca because it’s less prickly, longer-lasting, and resists pilling. Plus, it’s better for the environment—alpacas are soft-hooved and gentle grazers, which makes them easier on pastures than other herd animals.",
     "color": ["red", "green", "yellow"],
-    "size": ["XS", "S", "M", "L", "XL", "XXL"]
+    "size": ["XS", "S", "M", "L", "XL", "XXL"],
+    "prices": [
+      { "size": "XS", "price": "145.00" },
+      { "size": "S", "price": "155.00" },
+      { "size": "M", "price": "165.00" },
+      { "size": "L", "price": "175.00" },
+      { "size": "XL", "price": "185.00" },
+      { "size": "XXL", "price": "195.00" }
+    ]
   },
   {
-    "id" : 5,
+    "id": 5,
     "title": "The Oversized Alpaca Crew",
     "tag": "cardigan",
     "productImage": "/Images/ProductImg/card1.webp",
@@ -61,10 +93,18 @@
     "price": "100.00",
     "description": "Our first alpaca sweater. With a cool rib pattern and a crew neckline, the Oversized Alpaca Crew has all the warmth of a cozy winter knit with a plush, airy feel. We love alpaca because it’s less prickly, longer-lasting, and resists pilling. Plus, it’s better for the environment—alpacas are soft-hooved and gentle grazers, which makes them easier on pastures than other herd animals.",
     "color": ["red", "green", "yellow"],
-    "size": ["XS", "S", "M", "L", "XL", "XXL"]
+    "size": ["XS", "S", "M", "L", "XL", "XXL"],
+    "prices": [
+      { "size": "XS", "price": "100.00" },
+      { "size": "S", "price": "110.00" },
+      { "size": "M", "price": "120.00" },
+      { "size": "L", "price": "130.00" },
+      { "size": "XL", "price": "140.00" },
+      { "size": "XXL", "price": "150.00" }
+    ]
   },
   {
-    "id" : 6,
+    "id": 6,
     "title": "The Funnel-Neck Smock Top",
     "tag": "best sellers",
     "productImage": "/Images/ProductImg/card1.webp",
@@ -73,10 +113,18 @@
     "price": "70.00",
     "description": "Featuring an elevated neckline, billowy sleeves, and cinched cuffs, the Smocked Funnel-neck Top looks good tucked in or out. The best part? It’s made of 100% organic cotton and pairs perfectly with our Way-High denim.",
     "color": ["red", "green", "yellow"],
-    "size": ["XS", "S", "M", "L", "XL", "XXL"]
+    "size": ["XS", "S", "M", "L", "XL", "XXL"],
+    "prices": [
+      { "size": "XS", "price": "70.00" },
+      { "size": "S", "price": "80.00" },
+      { "size": "M", "price": "90.00" },
+      { "size": "L", "price": "100.00" },
+      { "size": "XL", "price": "110.00" },
+      { "size": "XXL", "price": "120.00" }
+    ]
   },
   {
-    "id" : 7,
+    "id": 7,
     "title": "The Gathered Drape Trench",
     "tag": "best sellers",
     "productImage": "/Images/ProductImg/card1.webp",
@@ -85,10 +133,18 @@
     "price": "198.00",
     "description": "Keep it classy with our upgraded Gathered Drape Trench coat. It features storm flaps, gathered detail at the shoulders, and a high back slit. Wear it with a belt for a more fitted look or alone for a loose A-line silhouette.",
     "color": ["red", "green", "yellow"],
-    "size": ["XS", "S", "M", "L", "XL", "XXL"]
+    "size": ["XS", "S", "M", "L", "XL", "XXL"],
+    "prices": [
+      { "size": "XS", "price": "198.00" },
+      { "size": "S", "price": "208.00" },
+      { "size": "M", "price": "218.00" },
+      { "size": "L", "price": "228.00" },
+      { "size": "XL", "price": "238.00" },
+      { "size": "XXL", "price": "248.00" }
+    ]
   },
   {
-    "id" : 8,
+    "id": 8,
     "title": "The Organic Cotton Chunky Beanie",
     "tag": "accessories",
     "productImage": "/Images/ProductImg/card1.webp",
@@ -97,10 +153,18 @@
     "price": "48.00",
     "description": "Like your favorite chunky sweater, but for your head. The Organic Cotton Chunky Beanie features an extra-thick knit, a cuffed brim, and a snug, unisex fit. The best part? It’s made of 100% organic cotton with a touch of stretch, which makes it comfy, cozy, and as warm as can be.",
     "color": ["red", "green", "yellow"],
-    "size": ["XS", "S", "M", "L", "XL", "XXL"]
+    "size": ["XS", "S", "M", "L", "XL", "XXL"],
+    "prices": [
+      { "size": "XS", "price": "48.00" },
+      { "size": "S", "price": "58.00" },
+      { "size": "M", "price": "68.00" },
+      { "size": "L", "price": "78.00" },
+      { "size": "XL", "price": "88.00" },
+      { "size": "XXL", "price": "98.00" }
+    ]
   },
   {
-    "id" : 9,
+    "id": 9,
     "title": "The Organic Kiwi Baseball Cap",
     "tag": "accessories",
     "productImage": "/Images/ProductImg/card1.webp",
@@ -109,10 +173,18 @@
     "price": "40.00",
     "description": "The Baseball Cap is made of durable organic canvas with brushed metal hardware and tonal embroidery. Talk about a home run.",
     "color": ["red", "green", "yellow"],
-    "size": ["XS", "S", "M", "L", "XL", "XXL"]
+    "size": ["XS", "S", "M", "L", "XL", "XXL"],
+    "prices": [
+      { "size": "XS", "price": "40.00" },
+      { "size": "S", "price": "50.00" },
+      { "size": "M", "price": "60.00" },
+      { "size": "L", "price": "70.00" },
+      { "size": "XL", "price": "80.00" },
+      { "size": "XXL", "price": "90.00" }
+    ]
   },
   {
-    "id" : 10,
+    "id": 10,
     "title": "The Iconic Suede Chukka Boot",
     "tag": "best sellers",
     "productImage": "/Images/ProductImg/card1.webp",
@@ -121,10 +193,18 @@
     "price": "125.00",
     "description": "The Baseball Cap is made of durable organic canvas with brushed metal hardware and tonal embroidery. Talk about a home run.",
     "color": ["red", "green", "yellow"],
-    "size": ["XS", "S", "M", "L", "XL", "XXL"]
+    "size": ["XS", "S", "M", "L", "XL", "XXL"],
+    "prices": [
+      { "size": "XS", "price": "125.00" },
+      { "size": "S", "price": "135.00" },
+      { "size": "M", "price": "145.00" },
+      { "size": "L", "price": "155.00" },
+      { "size": "XL", "price": "165.00" },
+      { "size": "XXL", "price": "175.00" }
+    ]
   },
   {
-    "id" : 11,
+    "id": 11,
     "title": "The Organic Cotton Slim Fit Jean",
     "tag": "back in stock",
     "productImage": "/Images/ProductImg/card1.webp",
@@ -133,10 +213,18 @@
     "price": "108.00",
     "description": "The iconic suede chukka boot design gets cleaned up and made more comfortable with our 94.2% virgin-plastic-free sneaker sole. The Desert Boot—classed-up looks and sneaker-level comfort.",
     "color": ["red", "green", "yellow"],
-    "size": ["XS", "S", "M", "L", "XL", "XXL"]
+    "size": ["XS", "S", "M", "L", "XL", "XXL"],
+    "prices": [
+      { "size": "XS", "price": "108.00" },
+      { "size": "S", "price": "118.00" },
+      { "size": "M", "price": "128.00" },
+      { "size": "L", "price": "138.00" },
+      { "size": "XL", "price": "148.00" },
+      { "size": "XXL", "price": "158.00" }
+    ]
   },
   {
-    "id" : 12,
+    "id": 12,
     "title": "The Felted Merino Cable-Knit Crew",
     "tag": "new arrivals",
     "productImage": "/Images/ProductImg/card1.webp",
@@ -145,6 +233,14 @@
     "price": "58.00",
     "description": "A premium organic sweatshirt—made for the track ahead. Featuring a classic crew neckline, raglan sleeves, a front kangaroo pocket, and a relaxed fit, the Track Crewneck has a signature look that will stand the test of time. Plus, it’s made of custom-developed, organic french terry, which gives it a premium feel without the luxury markup.",
     "color": ["red", "green", "yellow"],
-    "size": ["XS", "S", "M", "L", "XL", "XXL"]
+    "size": ["XS", "S", "M", "L", "XL", "XXL"],
+    "prices": [
+      { "size": "XS", "price": "58.00" },
+      { "size": "S", "price": "68.00" },
+      { "size": "M", "price": "78.00" },
+      { "size": "L", "price": "88.00" },
+      { "size": "XL", "price": "98.00" },
+      { "size": "XXL", "price": "108.00" }
+    ]
   }
 ]

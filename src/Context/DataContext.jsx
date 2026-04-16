@@ -30,7 +30,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         cartItems: state.cartItems.filter(
-          (item) => item.productId !== action.payload,
+          (item) => item.id !== action.payload,
         ),
       };
     case "products/setColor":
@@ -38,21 +38,40 @@ const reducer = (state, action) => {
     case "products/setSize":
       return { ...state, productSize: action.payload };
     case "products/addToCart": {
-      const productExist = state.cartItems.find(
+      const productExist = state.cartItems.filter(
         (item) => item.productId === action.payload.productId,
       );
       if (productExist) {
-        return {
-          ...state,
-          cartItems: state.cartItems.map((item) =>
-            item.productId === action.payload.productId
-              ? { ...item, quantity: item.quantity + action.payload.quantity }
-              : item,
-          ),
-          quantity: 1,
-          productColor: "",
-          productSize: "",
-        };
+        // const colorExist =
+        //   productExist.productColor === action.payload.productColor
+        //     ? true
+        //     : false;
+        // const sizeExist =
+        //   productExist.productSize === action.payload.productSize
+        //     ? true
+        //     : false;
+        const productFound = productExist.find((item) => item.productColor === action.payload.productColor && item.productSize === action.payload.productSize ? true : false);
+        if (productFound) {
+          return {
+            ...state,
+            // cartItems: state.cartItems.map((item) =>
+            //   item.productId === action.payload.productId
+            //     ? { ...item, quantity: item.quantity + action.payload.quantity }
+            //     : item,
+            // ),
+            quantity: 1,
+            productColor: "",
+            productSize: "",
+          };
+        } else {
+          return {
+            ...state,
+            cartItems: [...state.cartItems, action.payload],
+            quantity: 1,
+            productColor: "",
+            productSize: "",
+          };
+        }
       } else {
         return {
           ...state,
@@ -67,7 +86,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         cartItems: state.cartItems.map((item) => {
-          if (item.productId === action.payload) {
+          if (item.id === action.payload) {
             const newQuantity = item.quantity + 1;
             return {
               ...item,
@@ -82,7 +101,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         cartItems: state.cartItems.map((item) => {
-          if (item.productId === action.payload) {
+          if (item.id === action.payload) {
             const newQuantity =
               item.quantity === 0 ? item.quantity : item.quantity - 1;
             return {
@@ -95,10 +114,12 @@ const reducer = (state, action) => {
         }),
       };
     case "wishlist/addItems":
-      console.log(action.payload);
-      return {...state, wishList: state.wishList[curr => [...curr, action.payload]]};
+      return {
+        ...state,
+        wishList: [...state.wishList, action.payload],
+      };
     case "wishlist/removeItems":
-      return
+      return {...state, wishList: state.wishList.filter(curr => curr.id !== action.payload)};
     default:
       return state;
   }
@@ -112,15 +133,22 @@ export function ContextProvider({ children }) {
   const [featuredProduct, setFeaturedProduct] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [
-    { quantity, deliveryCharge, cartItems, productColor, productSize, wishList },
+    {
+      quantity,
+      deliveryCharge,
+      cartItems,
+      productColor,
+      productSize,
+      wishList,
+    },
     dispatch,
   ] = useReducer(reducer, initialState);
   const [loginModal, setLoginModal] = useState(false);
   const [profileEdit, setProfileEdit] = useState(false);
   const [passwordEdit, setPasswordEdit] = useState(false);
-  const [ addCategory, setAddCategory] = useState(false);
-  const [ addProduct, setAddProduct ] = useState(false);
-  const [ updateAddress, setUpdateAddress ] = useState(false);
+  const [addCategory, setAddCategory] = useState(false);
+  const [addProduct, setAddProduct] = useState(false);
+  const [updateAddress, setUpdateAddress] = useState(false);
 
   const subTotal = useMemo(() => {
     return cartItems.reduce((total, items) => total + items.subTotal, 0);
@@ -211,8 +239,17 @@ export function ContextProvider({ children }) {
         subTotal,
         loginModal,
         setLoginModal,
-        wishList,profileEdit, setProfileEdit, passwordEdit, setPasswordEdit, addCategory, setAddCategory,
-        addProduct, setAddProduct, updateAddress, setUpdateAddress,
+        wishList,
+        profileEdit,
+        setProfileEdit,
+        passwordEdit,
+        setPasswordEdit,
+        addCategory,
+        setAddCategory,
+        addProduct,
+        setAddProduct,
+        updateAddress,
+        setUpdateAddress,
       }}
     >
       {" "}

@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import DataContext from "../../Context/DataContext";
 import { Link } from "react-router-dom";
-import ProductImg from "../../../public/Images/ProductImg/card1.webp";
 
 function Wishlist() {
-  const { wishList } = useContext(DataContext);
+  const { wishList, dispatch } = useContext(DataContext);
+ 
   return (
     <div>
       <h2 className="font-semibold tracking-wide text-2xl mb-6">My WishList</h2>
@@ -19,42 +19,44 @@ function Wishlist() {
         </div>
       ) : (
         <>
-          <div className="hidden md:grid grid-cols-[auto_1fr_auto_auto] gap-6 items-center">
+        <div className="hidden md:flex flex-col gap-6">
+          {wishList.map(item => (
+          <div key={item.id} className="grid grid-cols-[auto_1fr_auto_auto] gap-6 items-center">
             <img
-              src={ProductImg}
+              src={item.image}
               alt="product image"
               className="h-32 w-32 object-contain"
             />
             <div className="flex flex-col gap-1.5">
-              <p className="text-lg">The Brushed Flannel Caro Shirt</p>
-              <p className="text-lg tracking-wide">$180.00</p>
-              <p>Date added: April 8, 2026</p>
+              <p className="text-lg">{item.title}</p>
+              <p className="text-lg tracking-wide">${item.price}</p>
+              <p>Date added: {item.date}</p>
             </div>
+            <Link to={`/product-details/${item.slug}`}>
             <button className="bg-black text-white h-12 w-fit px-4 cursor-pointer border transition-colors duration-300 ease-in-out hover:bg-white hover:text-black">
               Select Option
-            </button>
-            <button className="text-red-600 h-12 w-fit px-4 cursor-pointer border border-red-600 transition-colors duration-300 ease-in-out hover:bg-red-600 hover:text-white">
+            </button></Link>
+            <button onClick={() => dispatch({ type: "wishlist/removeItems", payload: item.id})} className="text-red-600 h-12 w-fit px-4 cursor-pointer border border-red-600 transition-colors duration-300 ease-in-out hover:bg-red-600 hover:text-white">
               Remove
             </button>
           </div>
+          ))}
+        </div>
           <div className="md:hidden flex flex-col gap-2">
-            <div className="border rounded-sm w-full h-fit px-2 py-2">
+            {wishList.map(item => (
+            <div key={item.id} className="border rounded-sm w-full h-fit px-2 py-2">
               <div className="flex gap-0.5 items-center">
                 <img
-                  src={ProductImg}
+                  src={item.image}
                   alt="product Image"
                   className="h-24 w-24 object-cover"
                 />
                 <div className="flex flex-col gap-0.5 text-xs">
                   <h3 className="font-semibold text-sm">
-                    The Alpaca Waffle-Stitch Polo - Dark Wheat
+                    {item.title}
                   </h3>
-                  <p>Size: XS</p>
-                  <p>Color: red</p>
-                  <div className="flex justify-between items-center">
-                    <p>Quantity: 1</p>
-                    <p className="font-semibold">Total $180.00</p>
-                  </div>
+                    <p className="font-semibold">Total ${item.price}</p>
+                    <p>Date Added: {item.date}</p>
                 </div>
               </div>
               <div className="flex justify-end mt-3">
@@ -63,6 +65,7 @@ function Wishlist() {
                 </button>
               </div>
             </div>
+            ))}
           </div>
         </>
       )}

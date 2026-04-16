@@ -23,13 +23,24 @@ function Product() {
     "Price High to Low",
   ];
   const [dropdownItem, setdropdownItem] = useState(sortingList[0]);
-  const priceList = ["All", "$0 - $59", "$60 - $119", "$120 - $179", "$180 - $239", "$240+"]
+  const priceList = [
+    "All",
+    "$0 - $59",
+    "$60 - $119",
+    "$120 - $179",
+    "$180 - $239",
+    "$240+",
+  ];
   const [filteredProduct, setFilteredProduct] = useState([]);
-  const [ filter, setFilter ] = useState("");
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    if(filter === "") return;
-    setFilteredProduct(featuredProduct.filter(item => item.tag.toLowerCase() === filter.toLowerCase() ));
+    if (filter === "") return;
+    setFilteredProduct(
+      featuredProduct.filter(
+        (item) => item.tag.toLowerCase() === filter.toLowerCase(),
+      ),
+    );
   }, [filter, featuredProduct]);
 
   return (
@@ -58,7 +69,8 @@ function Product() {
             {categoryFilter && (
               <ul className="mt-3">
                 {category.map((item) => (
-                  <li onClick={() => setFilter(item.value)}
+                  <li
+                    onClick={() => setFilter(item.value)}
                     key={item.id}
                     className={`py-2 px-4 cursor-pointer hover:bg-gray-200 ${filter === item.value ? "bg-gray-300" : ""}`}
                   >
@@ -102,7 +114,10 @@ function Product() {
           </div>
           {/* price filter */}
           <div className="flex flex-col border-t-2 pt-4 border-gray-300">
-            <div className="flex items-center justify-between cursor-pointer" onClick={() => setPriceFilter(prev => !prev)}>
+            <div
+              className="flex items-center justify-between cursor-pointer"
+              onClick={() => setPriceFilter((prev) => !prev)}
+            >
               <h3 className="font-semibold text-lg">Price</h3>
               <button className="cursor-pointer group">
                 <img
@@ -112,10 +127,17 @@ function Product() {
                 />
               </button>
             </div>
-            {priceFilter && ( 
-              <ul className="mt-3">{ priceList.map((item, index) => (
-                <li key={index} className="py-2 px-4 cursor-pointer hover:bg-gray-200">{item}</li>
-              ))}</ul>
+            {priceFilter && (
+              <ul className="mt-3">
+                {priceList.map((item, index) => (
+                  <li
+                    key={index}
+                    className="py-2 px-4 cursor-pointer hover:bg-gray-200"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
         </div>
@@ -171,10 +193,10 @@ function Product() {
           </div>
 
           {/* product list */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 ">
-            { filteredProduct.length === 0 ? featuredProduct.map((item) => (
-              <ProdcutList item={item} />
-            )) : filteredProduct.map((item => <ProdcutList item={item} />))}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-0 md:gap-6 ">
+            {filteredProduct.length === 0
+              ? featuredProduct.map((item) => <ProdcutList item={item} />)
+              : filteredProduct.map((item) => <ProdcutList item={item} />)}
           </div>
         </div>
       </div>
@@ -184,19 +206,20 @@ function Product() {
 
 export default Product;
 
-function ProdcutList ( { item }) {
+function ProdcutList({ item }) {
   return (
-           <div key={item.title}>
-                <ProductCard
-                  id={item.title}
-                  image={item.productImage}
-                  coverImage={item.productCover}
-                  price={item.price}
-                  tag={item.tag}
-                  originalPrice={item.originalPrice}
-                  discount={item.discount}
-                  slug={item.slug}
-                />{" "}
-              </div>
+    <div key={item.title}>
+      <ProductCard
+        id={item.id}
+        title={item.title}
+        image={item.productImage}
+        coverImage={item.productCover}
+        price={item.price}
+        tag={item.tag}
+        originalPrice={item.originalPrice}
+        discount={item.discount}
+        slug={item.slug}
+      />{" "}
+    </div>
   );
 }

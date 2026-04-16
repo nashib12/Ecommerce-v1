@@ -31,7 +31,8 @@ function FeaturedProducts() {
           {featuredProduct.map((item) => (
             <div key={item.title}>
               <ProductCard
-                id={item.title}
+                id={item.id}
+                title={item.title}
                 image={item.productImage}
                 coverImage={item.productCover}
                 price={item.price}
@@ -59,7 +60,7 @@ function FeaturedProducts() {
             <span className="text-red-700">$99.00</span>
             <span className="line-through text-gray-600">$180.00</span>
           </div>
-          <button className="cursor-pointer uppercase bg-white text-lg font-semibold h-14 w-fit px-4 flex items-center">
+          <button className="cursor-pointer uppercase bg-white text-sm md:text-lg font-semibold h-12 md:h-14 w-fit px-4 flex items-center">
             Get this deal
           </button>
         </div>
@@ -70,7 +71,7 @@ function FeaturedProducts() {
           <img
             src={ShippingImg}
             alt="free shipping"
-            className="h-16 w-16 object-contain"
+            className="h-12 w-12 md:h-16 md:w-16 object-contain"
           />
           <div>
             <h3 className="text-lg font-semibold">Free Shipping</h3>
@@ -83,7 +84,7 @@ function FeaturedProducts() {
           <img
             src={DollarImg}
             alt="money back"
-            className="h-12 w-12 object-contain"
+            className="h-8 w-8 md:h-12 md:w-12 object-contain"
           />
           <div>
             <h3 className="text-lg font-semibold">Money Back Guarantee</h3>
@@ -96,7 +97,7 @@ function FeaturedProducts() {
           <img
             src={CustomerSupportImg}
             alt="customer support"
-            className="h-12 w-12 object-contain"
+            className="h-8 w-8 md:h-12 md:w-12 object-contain"
           />
           <div>
             <h3 className="text-lg font-semibold">Online Support</h3>
@@ -109,7 +110,7 @@ function FeaturedProducts() {
           <img
             src={CreditCardImg}
             alt="Credit Card "
-            className="h-12 w-12 object-contain"
+            className="h-8 w-8 md:h-12 md:w-12 object-contain"
           />
           <div>
             <h3 className="text-lg font-semibold">Flexible Payment</h3>

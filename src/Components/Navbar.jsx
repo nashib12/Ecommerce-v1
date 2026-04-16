@@ -107,9 +107,11 @@ function Navbar() {
         <div className="hidden md:block bg-gray-100 w-full">
           <div className=" max-w-7xl mx-auto">
             <div className="grid grid-cols-[auto_1fr_auto] items-center gap-16 px-6 md:px-12 py-6">
+              <Link to={'/'}>
               <h2 className="font-bold text-3xl tracking-wider">
                 <span className="text-5xl">M</span>egastore
               </h2>
+              </Link>
               <div className="w-full h-12 flex items-center justify-center">
                 <div className="border w-160 h-full flex">
                   <DropdownMenu
@@ -212,13 +214,13 @@ function Navbar() {
                 <Link to={'/all-products'} >All Products</Link>
               </li>
               <li>
-                <Link to={'/about-us'}>About</Link>
+                <Link to={'/selected-category/best-sellers'}>Best Sellers</Link>
               </li>
               <li>
-                <a href="#">Products on sale</a>
+                <Link to={'/selected-category/back-in-stock'} >Back In Stock</Link>
               </li>
               <li>
-                <Link to={'/contact-us'}>Contact Us</Link>
+                <Link to={'/selected-category/new-arrivals'}>New Arrivals</Link>
               </li>
             </ul>
           </div>

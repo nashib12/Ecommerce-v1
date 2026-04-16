@@ -5,6 +5,7 @@ import ProductImg from "../../../public/Images/ProductImg/card1.webp";
 
 function ShoppingCart({ setDashboardNavigation }) {
   const { cartItems } = useContext(DataContext);
+  const date = new Date();
   return (
     <div>
       <h2 className="font-semibold tracking-wide text-lg md:text-2xl mb-3 md:mb-6">
@@ -33,13 +34,14 @@ function ShoppingCart({ setDashboardNavigation }) {
                 </tr>
               </thead>
               <tbody>
-                <tr className="h-16 border-b text-center">
-                  <td className="border-x">#1986</td>
-                  <td className="border-r">8 April, 2026</td>
+                {cartItems.map(item => (
+                <tr key={item.id} className="h-16 border-b text-center">
+                  <td className="border-x">{item.orderId}</td>
+                  <td className="border-r">{ `${date.getDay()}-${date.getMonth()}-${date.getFullYear()}`}</td>
                   <td className="border-r">
                     <span className="text-yellow-500">Pending</span>
                   </td>
-                  <td className="border-r">$ 135.00</td>
+                  <td className="border-r">$ {item.subTotal.toFixed(2)}</td>
                   <td className="border-r">
                     <button
                       onClick={() => setDashboardNavigation("order-details")}
@@ -49,6 +51,7 @@ function ShoppingCart({ setDashboardNavigation }) {
                     </button>
                   </td>
                 </tr>
+                ))}
               </tbody>
             </table>
           </div>

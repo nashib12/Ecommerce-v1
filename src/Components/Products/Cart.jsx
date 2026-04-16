@@ -14,7 +14,7 @@ function Cart() {
   return (
     <section
       id="cart"
-      className="max-w-7xl mx-auto px-6 py-6 md:px-12 md:py-12"
+      className="max-w-7xl mx-auto px-6 py-6 md:px-12 md:py-12 min-h-screen"
     >
       {cartItems.length <= 0 ? (
         <div className="flex flex-col items-center justify-center gap-2">
@@ -50,7 +50,7 @@ function Cart() {
               </thead>
               <tbody>
                 {cartItems.map((item) => (
-                  <tr key={item.productId} className="h-40">
+                  <tr key={item.id} className="h-40">
                     <td>
                       <div className="flex gap-3">
                         <img
@@ -68,7 +68,7 @@ function Cart() {
                             onClick={() =>
                               dispatch({
                                 type: "products/clearItem",
-                                payload: item.productId,
+                                payload: item.id,
                               })
                             }
                             className="flex items-center justify-center gap-2 h-10 w-fit px-4 cursor-pointer border border-red-600 text-red-600"
@@ -92,7 +92,7 @@ function Cart() {
                           onClick={() =>
                             dispatch({
                               type: "carts/removeItem",
-                              payload: item.productId,
+                              payload: item.id,
                             })
                           }
                           className="h-full w-10 flex items-center justify-center cursor-pointer"
@@ -110,7 +110,7 @@ function Cart() {
                           onClick={() =>
                             dispatch({
                               type: "carts/addItem",
-                              payload: item.productId,
+                              payload: item.id,
                             })
                           }
                           className="h-full w-10 flex items-center justify-center cursor-pointer"
@@ -152,7 +152,7 @@ function Cart() {
                           onClick={() => {
                               dispatch({
                                 type: "carts/removeItem",
-                                payload: item.productId,
+                                payload: item.id,
                               });
                           }}
                           className="h-full w-8 flex items-center justify-center cursor-pointer"
@@ -164,13 +164,13 @@ function Cart() {
                           />
                         </button>
                         <span className="font-semibold w-6 text-center">
-                          {item.quantity === 0 ? (dispatch({type: "products/clearItem", payload: item.productId})) : item.quantity}
+                          {item.quantity === 0 ? (dispatch({type: "products/clearItem", payload: item.id})) : item.quantity}
                         </span>
                         <button
                           onClick={() =>
                             dispatch({
                               type: "carts/addItem",
-                              payload: item.productId,
+                              payload: item.id,
                             })
                           }
                           className="h-full w-8 flex items-center justify-center cursor-pointer"
@@ -193,7 +193,7 @@ function Cart() {
                     onClick={() =>
                       dispatch({
                         type: "products/clearItem",
-                        payload: item.productId,
+                        payload: item.id,
                       })
                     }
                     className="text-sm px-4 h-9 w-fit bg-red-600 text-white rounded-sm"

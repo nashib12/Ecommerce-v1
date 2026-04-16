@@ -6,9 +6,11 @@ import EyeImg from "../../public/Icons/view.png";
 import { Tooltip } from "react-tooltip";
 import { Link } from "react-router-dom";
 import DataContext from "../Context/DataContext";
+import { toast } from "react-toastify";
 
 function ProductCard({
   id,
+  title,
   image = ProductImg1,
   coverImage = ProductImg2,
   price = "$125.00",
@@ -17,13 +19,25 @@ function ProductCard({
   discount,
   slug
 }) {
-  const { dispatch } = useContext(DataContext);
+  const { dispatch, wishList } = useContext(DataContext);
+  const date = new Date();
+
+  const handleAddToWihlist = () => {
+    const productExists = wishList.find(curr => curr.id === id) 
+    if(productExists) {
+      return toast.error(`${title}. Already exists in wishlist.`);
+    } else {
+      dispatch({type: "wishlist/addItems", payload: {id, title, image, slug, price, date: `${date.getDay()}-${date.getMonth()}-${date.getFullYear()}`}});
+      toast.success(`${title}. Successfully added to the wishlist.`);
+      return;
+    }
+  }
 
   return (
-    <div className="h-96 md:h-106 w-fit md:w-60 border-2 border-gray-300 px-2 py-2">
+    <div className="h-fit md:h-106 w-fit md:w-60 border-2 border-gray-300 md:px-2 py-2">
       <div className="relative group cursor-pointer overflow-hidden">
         {discount ? (
-          <button className="absolute top-2 left-0 h-fit text-sm w-fit px-3 py-1 bg-red-700 text-white">
+          <button className="absolute top-2 left-0 h-fit text-xs  w-fit px-2 py-1 bg-red-700 text-white">
             -{discount}%
           </button>
         ) : (
@@ -32,7 +46,7 @@ function ProductCard({
         <img
           src={image}
           alt="product image"
-          className="mb-3 h-4((0 md:h-50 w-full object-cover group-hover:hidden"
+          className="mb-3 h-40 md:h-50 w-full object-cover group-hover:hidden"
         />
         <img
           src={coverImage}
@@ -40,7 +54,7 @@ function ProductCard({
           className="mb-3 h-40 md:h-50 w-full object-cover hidden group-hover:block"
         />
         <button
-          onClick={() => dispatch({type: "wishlist/addItems", payload: "Item added"})}
+          onClick={() => handleAddToWihlist()}
           data-tooltip-id={`wishlist-${id}`}
           className="absolute top-4 right-2 hidden h-9 w-9 rounded-full bg-white group-hover:flex items-center justify-center cursor-pointer"
         >
@@ -68,8 +82,8 @@ function ProductCard({
         </Tooltip>
       </div>
       <div className="pt-2 pb-2 px-2">
-        <span className="text-sm uppercase text-gray-500">{tag}</span>
-        <h2 className="mt-1 mb-2 md:text-xl font-semibold ">{id}</h2>
+        <span className="text-xs uppercase text-gray-500">{tag}</span>
+        <h2 className="mt-1 mb-2 text-sm md:text-xl font-semibold ">{title}</h2>
         {originalPrice ? (
           <>
             <span className="md:text-xl tracking-wide line-through">
@@ -79,11 +93,11 @@ function ProductCard({
             <span className="md:text-xl tracking-wide text-red-500">$ {price}</span>
           </>
         ) : (
-          <span className="text-xl tracking-wide">$ {price}</span>
+          <span className="md:text-xl tracking-wide">$ {price}</span>
         )}
         <Link to={`/product-details/${slug}`}>
         <button className="w-full h-9 md:h-12 text-sm md:text-md bg-gray-200 mt-3 cursor-pointer transition-colors duration-150 ease-in-out hover:bg-black hover:text-white">
-          Select options
+          View Details
         </button></Link>
       </div>
     </div>

@@ -19,7 +19,7 @@ function Footer() {
                 <div>
                     <h3 className='text-2xl mb-5 uppercase tracking-wide'>Find It Fast</h3>
                     <ul>
-                        <li className='mb-3 cursor-pointer'><a href="/#">About Us</a></li>
+                        <li className='mb-3 cursor-pointer'><Link to={'/about-us'}>About</Link></li>
                         <li className='mb-3 cursor-pointer'><a href="/#">Top Searches</a></li>
                         <li className='mb-3 cursor-pointer'><a href="/#">Privacy Policy</a></li>
                         <li className='mb-3 cursor-pointer'><a href="/#">Terms And Condition</a></li>
@@ -42,6 +42,7 @@ function Footer() {
                         <li className='mb-3 cursor-pointer'><a href="/#">Partnership Program</a></li>
                         <li className='mb-3 cursor-pointer'><a href="/#">Associate Program</a></li>
                         <li className='mb-3 cursor-pointer'><a href="/#">Wholesale Socks</a></li>
+                        <li className='mb-3 cursor-pointer'><Link to={'/contact-us'}>Contact Us</Link></li>
                     </ul>
                 </div>
                 <div>

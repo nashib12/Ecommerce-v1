@@ -24,6 +24,12 @@ import AdminLogin from "./Components/AdminDashboard/AdminLogin";
 import AddCategory from "./Components/Modal/AddCategory";
 import AddProduct from "./Components/Modal/AddProduct";
 import AddressModal from "./Components/Modal/AddressModal";
+import { ToastContainer } from "react-toastify";
+import FeaturedProduct from "./Pages/FeaturedProduct";
+import BestSeller from "./Components/Featured/BestSeller";
+import BackInStock from "./Components/Featured/BackInStock";
+import NewArrivals from "./Components/Featured/NewArrivals";
+
 
 function App() {
   return (
@@ -31,6 +37,7 @@ function App() {
       <ReactLenis root options={{ duration: 1.3, smoothWheel: true }}>
         <BrowserRouter>
           <Layout />
+          <ToastContainer />
         </BrowserRouter>
       </ReactLenis>
     </ContextProvider>
@@ -57,6 +64,11 @@ function Layout() {
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/my-account" element={<UserDashboard />} />
             <Route path="/check-out" element={<Checkout />} />
+            <Route path="/selected-category/" element={<FeaturedProduct />}>
+              <Route path="best-sellers" element={<BestSeller />} />
+              <Route path="back-in-stock" element={<BackInStock />} />
+              <Route path="new-arrivals" element={<NewArrivals />} />
+            </Route>
           </Routes>
           <Footer />
           <ProductModal />

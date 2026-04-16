@@ -51,10 +51,10 @@ function Trending() {
                     <button className='cursor-pointer bg-white flex items-center justify-center h-12 w-36 font-semibold tracking-wider uppercase'>Shop Now</button>
                 </div>
             </div>
-            <div className='grid grid-cols-2 md:grid-cols-3 gap-6'>
+            <div className='grid grid-cols-2 md:grid-cols-3 md:gap-6'>
                 {weeklyData.map(item => (
                     <div key={item.title}>
-                        <ProductCard id={item.title} image={item.productImage} coverImage={item.productCover} price={item.price} tag={item.tag} slug={item.slug} />
+                        <ProductCard id={item.id} title={item.title} image={item.productImage} coverImage={item.productCover} price={item.price} tag={item.tag} slug={item.slug} />
                     </div>
                 ))}
             </div>
