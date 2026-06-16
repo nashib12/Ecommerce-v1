@@ -16,7 +16,7 @@ function Trending() {
     const scrollPrev = () => emblaApi?.scrollPrev();
     const scrollNext = () => emblaApi?.scrollNext();
 
-    const { trendingWeek, weeklyData } = useContext(DataContext);
+    const { trendingWeek, featuredProduct } = useContext(DataContext);
 
   return (
     <section id="trending" className='max-w-7xl mx-auto px-6 py-6 md:px-12 md:py-12'>
@@ -52,9 +52,19 @@ function Trending() {
                 </div>
             </div>
             <div className='grid grid-cols-2 md:grid-cols-3 md:gap-6'>
-                {weeklyData.map(item => (
-                    <div key={item.title}>
-                        <ProductCard id={item.id} title={item.title} image={item.productImage} coverImage={item.productCover} price={item.price} tag={item.tag} slug={item.slug} />
+                {featuredProduct.map(item => (
+                    <div key={`FTR-PRO-${item.id}`}>
+                        <ProductCard
+                            id={item.id}
+                            title={item.name}
+                            image={item.primary_image?.image_url}
+                            sale_price={item.sales_amount}
+                            tag={item.categories?.title}
+                            originalPrice={item.base_price}
+                            discount={item.sale_price}
+                            slug={item.slug}
+                            is_featured={item.is_featured}
+                        />
                     </div>
                 ))}
             </div>

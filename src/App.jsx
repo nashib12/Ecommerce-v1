@@ -29,17 +29,20 @@ import FeaturedProduct from "./Pages/FeaturedProduct";
 import BestSeller from "./Components/Featured/BestSeller";
 import BackInStock from "./Components/Featured/BackInStock";
 import NewArrivals from "./Components/Featured/NewArrivals";
+import { CartProvider } from "./Context/CartContext";
 
 
 function App() {
   return (
     <ContextProvider>
-      <ReactLenis root options={{ duration: 1.3, smoothWheel: true }}>
-        <BrowserRouter>
-          <Layout />
-          <ToastContainer />
-        </BrowserRouter>
-      </ReactLenis>
+      <CartProvider>
+        <ReactLenis root options={{ duration: 1.3, smoothWheel: true }}>
+          <BrowserRouter>
+            <Layout />
+            <ToastContainer />
+          </BrowserRouter>
+        </ReactLenis>
+      </CartProvider>
     </ContextProvider>
   );
 }

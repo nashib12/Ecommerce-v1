@@ -13,11 +13,12 @@ function ProductCard({
   title,
   image = ProductImg1,
   coverImage = ProductImg2,
-  price = "$125.00",
+  sale_price,
+  price = "$120",
   tag = "Cardigan",
   originalPrice,
   discount,
-  slug
+  slug, is_featured
 }) {
   const { dispatch, wishList } = useContext(DataContext);
   const date = new Date();
@@ -36,13 +37,11 @@ function ProductCard({
   return (
     <div className="h-fit md:h-106 w-fit md:w-60 border-2 border-gray-300 md:px-2 py-2">
       <div className="relative group cursor-pointer overflow-hidden">
-        {discount ? (
+        {discount && (
           <button className="absolute top-2 left-0 h-fit text-xs  w-fit px-2 py-1 bg-red-700 text-white">
             -{discount}%
           </button>
-        ) : (
-          ""
-        )}
+        ) }
         <img
           src={image}
           alt="product image"
@@ -82,18 +81,25 @@ function ProductCard({
         </Tooltip>
       </div>
       <div className="pt-2 pb-2 px-2">
+        <div className="flex items-center justify-between mb-3">
         <span className="text-xs uppercase text-gray-500">{tag}</span>
+        {is_featured && (
+          <button className="h-fit text-xs  w-fit px-2 py-1 bg-green-700 text-white">
+            Featured
+          </button>
+        )}
+        </div>
         <h2 className="mt-1 mb-2 text-sm md:text-xl font-semibold ">{title}</h2>
-        {originalPrice ? (
+        { sale_price > 0 ? (
           <>
             <span className="md:text-xl tracking-wide line-through">
-              $ {originalPrice}
+              ${originalPrice}
             </span>
             &nbsp;
-            <span className="md:text-xl tracking-wide text-red-500">$ {price}</span>
+            <span className="md:text-xl tracking-wide text-red-500">${sale_price}</span>
           </>
         ) : (
-          <span className="md:text-xl tracking-wide">$ {price}</span>
+          <span className="md:text-xl tracking-wide">$ {originalPrice}</span>
         )}
         <Link to={`/product-details/${slug}`}>
         <button className="w-full h-9 md:h-12 text-sm md:text-md bg-gray-200 mt-3 cursor-pointer transition-colors duration-150 ease-in-out hover:bg-black hover:text-white">

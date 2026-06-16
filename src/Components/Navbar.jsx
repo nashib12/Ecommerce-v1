@@ -12,23 +12,25 @@ import { useContext } from "react";
 import DataContext from "../Context/DataContext";
 import { Link, useLocation } from "react-router-dom";
 import { useLenis } from "lenis/react";
+import CartContext from "../Context/CartContext";
 
 function Navbar() {
   const lanugage = [
-    { id: "EN", value: "English" },
-    { id: "NP", value: "Nepali" },
+    { id: "EN", title: "English" },
+    { id: "NP", title: "Nepali" },
   ];
   const currency = [
-    { id: "USD", value: "USD" },
-    { id: "NPR", value: "NPR" },
-    { id: "GBP", value: "GBP" },
+    { id: "USD", title: "USD" },
+    { id: "NPR", title: "NPR" },
+    { id: "GBP", title: "GBP" },
   ];
   const [dropdown, setDropdown] = useState(false);
   const [categoryMenu, setCategoryMenu] = useState(false);
   const [subcategory, setSubcategory] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const { category, setLoginModal, cartItems } = useContext(DataContext);
+  const { category, setLoginModal } = useContext(DataContext);
+  const { cartItems } = useContext(CartContext);
   const location = useLocation();
   const lenis = useLenis();
 
@@ -160,15 +162,8 @@ function Navbar() {
         {/* Third Navbar */}
         <div className="bg-gray-100 border-t-2 border-gray-400 w-full">
           <div className="max-w-7xl mx-auto py-4 px-6 md:px-12 hidden md:grid grid-cols-[auto_1fr] gap-24">
-            <div
-              className="flex items-center relative"
-              onMouseEnter={() => setCategoryMenu(true)}
-              onMouseLeave={() => {
-                setCategoryMenu(false);
-                setSubcategory(null);
-              }}
-            >
-              <button className="h-13 w-fit px-4 flex items-center gap-2 tracking-wider uppercase cursor-pointer bg-black text-white">
+            <div className="flex items-center relative">
+              <button onClick={() => {setCategoryMenu(curr => !curr); setSubcategory('')}} className="h-13 w-fit px-4 flex items-center gap-2 tracking-wider uppercase cursor-pointer bg-black text-white">
                 <img
                   src={MenuImg}
                   alt="Menu Icon"
@@ -183,23 +178,17 @@ function Navbar() {
                     <li
                       key={item.id}
                       className="px-6 hover:bg-gray-200 cursor-pointer"
-                      onMouseEnter={() => setSubcategory(item.id)}
-                      onMouseLeave={() => setSubcategory(null)}
+                      onClick={() => setSubcategory(curr => curr === item.id ? '' : item.id)}
                     >
-                      {item.subCategory ? (
+                      {item.children.length !== 0 ? (
                         <SubcategoryMenu
-                          value={item.value}
+                          value={item.title}
                           subcategory={subcategory}
                           id={item.id}
-                          data={item.subCategory}
-                          setSubcategory={setSubcategory}
+                          data={item.children}
                         />
                       ) : (
-                        <div className="py-3">
-                          <a href="#" target="blank">
-                            {item.value}
-                          </a>
-                        </div>
+                        <p className="py-3">{item.title}</p>
                       )}
                     </li>
                   ))}
@@ -214,13 +203,16 @@ function Navbar() {
                 <Link to={'/all-products'} >All Products</Link>
               </li>
               <li>
-                <Link to={'/selected-category/best-sellers'}>Best Sellers</Link>
+                <Link to={'/selected-category/best-sellers'}>Men</Link>
               </li>
               <li>
-                <Link to={'/selected-category/back-in-stock'} >Back In Stock</Link>
+                <Link to={'/selected-category/back-in-stock'} >Women</Link>
               </li>
               <li>
-                <Link to={'/selected-category/new-arrivals'}>New Arrivals</Link>
+                <Link to={'/selected-category/new-arrivals'}>Kids</Link>
+              </li>
+              <li>
+                <Link to={'/selected-category/new-arrivals'}>Featured</Link>
               </li>
             </ul>
           </div>
@@ -293,11 +285,11 @@ function DropdownMenu({
               key={item.id}
               className="px-4 py-2  cursor-pointer duration-150 transition-colors ease-in-out hover:bg-gray-400"
               onClick={() => {
-                setButtonText(item.value);
+                setButtonText(item.title);
                 setDropdown(null);
               }}
             >
-              {item.value}
+              {item.title}
             </li>
           ))}
         </ul>
@@ -307,6 +299,7 @@ function DropdownMenu({
 }
 
 function SubcategoryMenu({ value, subcategory, id, data }) {
+    const [childDropdown, setChildDropdown ] = useState('');
   return (
     <div className="relative py-3">
       <button className="flex items-center justify-between w-full cursor-pointer">
@@ -320,10 +313,31 @@ function SubcategoryMenu({ value, subcategory, id, data }) {
       {subcategory === id && (
         <ul className="absolute top-0 left-full bg-gray-200 shadow-sm w-60 ml-6">
           {data.map((item) => (
-            <li key={item.id} className="px-3 py-3 hover:bg-gray-300">
-              {item.value}
+            <li key={item.id} className="px-3 hover:bg-gray-300">
+              { item.children.length > 0 ? (
+                <div className="relative" onMouseEnter={() => setChildDropdown(item.id)} onMouseLeave={() => setChildDropdown('')}>
+                  <div className="flex items-center justify-between cursor-pointer py-3" >
+                    { item.title }
+                    <img src={NextImg} className="h-4 w-4 object-contain" />
+                  </div>
+                  { childDropdown === item.id && (
+                    <>
+                      <div className="absolute top-0 left-full w-6 h-full" />
+                      <ul className="absolute top-0 left-full bg-gray-100 w-60 ml-3.5">
+                        { item.children.map(i => (
+                          <li key={`sub-cat-${i.id}`} className="px-3 py-3 hover:bg-gray-300">{i.title}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </div>
+              ) : 
+                <p className="py-3 hover:bg-gray-300">{item.title}</p>
+                
+              }
             </li>
-          ))}
+          ) //Data mapping ends here
+          )}
         </ul>
       )}
     </div>

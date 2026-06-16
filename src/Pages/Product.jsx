@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import DataContext from "../Context/DataContext";
 import PlusIcon from "../../public/Icons/plus.png";
 import MinusIcon from "../../public/Icons/minus.png";
@@ -6,13 +6,13 @@ import ButtonIcon from "../../public/Icons/down-chevron.png";
 import ListIcon from "../../public/Icons/list.png";
 import GridIcon from "../../public/Icons/grid.png";
 import ProductCard from "../Components/ProductCard";
+import usePagination from "../Components/Hooks/usePagination";
+import Pagination from "../Components/Pagination";
 
 function Product() {
-  const { category, featuredProduct } = useContext(DataContext);
-  const [categoryFilter, setCategoryFilter] = useState(true);
-  const [priceFilter, setPriceFilter] = useState(true);
-  const [colorFilter, setColorFilter] = useState(false);
-  const [sizeFilter, setSizeFilter] = useState(false);
+  const { category, attribute } = useContext(DataContext);
+  const { data: product, currentPage, lastPage, total, fetchPage, perPage } = usePagination('http://127.0.0.1:8000/api/product')
+  const [ filter, setFilter ] = useState('category');
   const [dropdown, setDropdown] = useState(false);
   const sortingList = [
     "Default Sorting",
@@ -31,17 +31,6 @@ function Product() {
     "$180 - $239",
     "$240+",
   ];
-  const [filteredProduct, setFilteredProduct] = useState([]);
-  const [filter, setFilter] = useState("");
-
-  useEffect(() => {
-    if (filter === "") return;
-    setFilteredProduct(
-      featuredProduct.filter(
-        (item) => item.tag.toLowerCase() === filter.toLowerCase(),
-      ),
-    );
-  }, [filter, featuredProduct]);
 
   return (
     <section
@@ -55,28 +44,28 @@ function Product() {
           <div className="flex flex-col border-t-2 py-4 border-gray-300">
             <div
               className="flex items-center justify-between cursor-pointer"
-              onClick={() => setCategoryFilter((prev) => !prev)}
+              onClick={() => setFilter((prev) => prev === 'category' ? '' : 'category')}
             >
               <h3 className="font-semibold text-lg">Categories</h3>
               <button className="cursor-pointer group">
                 <img
-                  src={categoryFilter ? MinusIcon : PlusIcon}
+                  src={filter === 'category' ? MinusIcon : PlusIcon}
                   alt="button icons for category toggle"
                   className="h-4 w-4 object-contain"
                 />
               </button>
             </div>
-            {categoryFilter && (
+            {filter === 'category' && (
               <ul className="mt-3">
-                {category.map((item) => (
-                  <li
-                    onClick={() => setFilter(item.value)}
-                    key={item.id}
-                    className={`py-2 px-4 cursor-pointer hover:bg-gray-200 ${filter === item.value ? "bg-gray-300" : ""}`}
+                {category.map((item) => {
+                  const hasParent = item.parent_id ? item.parent_id : null;
+                  return (hasParent === null && <li
+                    key={`CAT-${item.id}`}
+                    className={`py-2 px-4 cursor-pointer hover:bg-gray-200`}
                   >
-                    {item.value}
+                    {item.title}
                   </li>
-                ))}
+                )})}
               </ul>
             )}
           </div>
@@ -84,50 +73,60 @@ function Product() {
           <div className="flex flex-col border-t-2 py-4 border-gray-300">
             <div
               className="flex items-center justify-between cursor-pointer"
-              onClick={() => setColorFilter((prev) => !prev)}
+              onClick={() => setFilter((prev) => prev === 'color' ? '' : 'color')}
             >
               <h3 className="font-semibold text-lg">Colors</h3>
               <button className="cursor-pointer group">
                 <img
-                  src={colorFilter ? MinusIcon : PlusIcon}
+                  src={filter === 'color' ? MinusIcon : PlusIcon}
                   alt="button icons for category toggle"
                   className="h-4 w-4 object-contain"
                 />
               </button>
             </div>
+            { filter === 'color' && <ul className="mt-3">
+                { attribute.color.map(item => 
+                  <li key={`ATTR-CLR-${item.id}`} className={`py-2 px-4 cursor-pointer hover:bg-gray-200 flex items-center gap-2`}><div className="h-6 w-6 rounded-full" style={{ backgroundColor : `${item.meta.hex_code}`}} />{item.value}</li>
+                )}
+              </ul>}
           </div>
           {/* size filter */}
           <div className="flex flex-col border-t-2 py-4 border-gray-300">
             <div
               className="flex items-center justify-between cursor-pointer"
-              onClick={() => setSizeFilter((prev) => !prev)}
+              onClick={() => setFilter((prev) => prev === 'sizes' ? '' : 'sizes')}
             >
               <h3 className="font-semibold text-lg">Sizes</h3>
               <button className="cursor-pointer group">
                 <img
-                  src={sizeFilter ? MinusIcon : PlusIcon}
+                  src={filter === 'sizes' ? MinusIcon : PlusIcon}
                   alt="button icons for category toggle"
                   className="h-4 w-4 object-contain"
                 />
               </button>
             </div>
+            { filter === 'sizes' && <ul className="mt-3">
+                { attribute.sizes.map(item => 
+                  <li key={`ATTR-SIZE-${item.id}`} className={`py-2 px-4 cursor-pointer hover:bg-gray-200`}>{item.value}</li>
+                )}
+              </ul>}
           </div>
           {/* price filter */}
           <div className="flex flex-col border-t-2 pt-4 border-gray-300">
             <div
               className="flex items-center justify-between cursor-pointer"
-              onClick={() => setPriceFilter((prev) => !prev)}
+              onClick={() => setFilter((prev) => prev === 'price' ? '' : 'price')}
             >
               <h3 className="font-semibold text-lg">Price</h3>
               <button className="cursor-pointer group">
                 <img
-                  src={priceFilter ? MinusIcon : PlusIcon}
+                  src={filter === 'prize' ? MinusIcon : PlusIcon}
                   alt="button icons for category toggle"
                   className="h-4 w-4 object-contain"
                 />
               </button>
             </div>
-            {priceFilter && (
+            {filter === 'price' && (
               <ul className="mt-3">
                 {priceList.map((item, index) => (
                   <li
@@ -144,7 +143,7 @@ function Product() {
         <div className="col-span-9 md:px-8 md:py-6 md:bg-gray-100 md:shadow-sm rounded-md">
           <h2 className="mb-6 text-2xl tracking-wide font-semibold">Shop</h2>
           <div className="flex flex-col md:flex-row gap-3 md:items-center justify-between mb-6">
-            <p className="text-xl text-gray-500">Showing 12 of 34 results</p>
+            <p className="text-xl text-gray-500">Showing { perPage } of {total} results</p>
             <div className="flex gap-4">
               <div className="relative">
                 <button
@@ -194,9 +193,13 @@ function Product() {
 
           {/* product list */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-0 md:gap-6 ">
-            {filteredProduct.length === 0
-              ? featuredProduct.map((item) => <ProdcutList item={item} />)
-              : filteredProduct.map((item) => <ProdcutList item={item} />)}
+             { product?.map(item => (
+              <ProdcutList item={item} />
+             ))}
+             
+          </div>
+          <div className="flex items-center justify-center mt-4">
+            <Pagination currentPage={currentPage} lastPage={lastPage} onPageChange={fetchPage} /> 
           </div>
         </div>
       </div>
@@ -208,18 +211,18 @@ export default Product;
 
 function ProdcutList({ item }) {
   return (
-    <div key={item.title}>
+    <div key={`PRO_CARD-${item.id}`}>
       <ProductCard
         id={item.id}
-        title={item.title}
-        image={item.productImage}
-        coverImage={item.productCover}
-        price={item.price}
-        tag={item.tag}
-        originalPrice={item.originalPrice}
-        discount={item.discount}
+        title={item.name}
+        image={item.primary_image?.image_url}
+        sale_price={item.sales_amount}
+        tag={item.categories?.title}
+        originalPrice={item.base_price}
+        discount={item.sale_price}
         slug={item.slug}
-      />{" "}
+        is_featured={item.is_featured}
+      />
     </div>
   );
 }

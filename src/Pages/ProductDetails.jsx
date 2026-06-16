@@ -6,15 +6,6 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import ProductDetailImg1 from "../../public/Images/ProductImg/Details/p1.webp";
-import ProductDetailImg2 from "../../public/Images/ProductImg/Details/p2.jpg";
-import ProductDetailImg3 from "../../public/Images/ProductImg/Details/p3.jpg";
-import ProductDetailImg4 from "../../public/Images/ProductImg/Details/p4.jpg";
-import ProductDetailImg5 from "../../public/Images/ProductImg/Details/p5.jpg";
-import ProductDetailImg6 from "../../public/Images/ProductImg/Details/p7.jpg";
-import ProductDetailImg7 from "../../public/Images/ProductImg/Details/p8.jpg";
-import ProductDetailImg8 from "../../public/Images/ProductImg/Details/p9.jpg";
-import ProductDetailImg9 from "../../public/Images/ProductImg/Details/p10.jpg";
 import ArrowLeftImg from "../../public/Icons/arrow.png";
 import ArrowRightImg from "../../public/Icons/right-arrow.png";
 import StarImg from "../../public/Icons/star.png";
@@ -31,7 +22,6 @@ import PaymentImg2 from "../../public/Images/Logo/esewa.png";
 import PaymentImg3 from "../../public/Images/Logo/khalti.png";
 import PaymentImg4 from "../../public/Images/Logo/mastercard.svg";
 import PaymentImg5 from "../../public/Images/Logo/paypal.svg";
-import Description from "../Components/ProductDetails/Description";
 import Review from "../Components/ProductDetails/Review";
 import Questions from "../Components/ProductDetails/Questions";
 import { useNavigate, useParams } from "react-router-dom";
@@ -39,10 +29,37 @@ import DataContext from "../Context/DataContext";
 import { v4 as uuidV4, v1 as uuidV1 } from "uuid";
 import { toast } from "react-toastify";
 import ProductCard from "../Components/ProductCard";
+import axios from "axios";
+import DOMPurify from 'dompurify'
+import CartContext from "../Context/CartContext";
+
+
+ const PaymentPartner = [
+    { id: 1, img: PaymentImg1 },
+    { id: 2, img: PaymentImg2 },
+    { id: 3, img: PaymentImg3 },
+    { id: 4, img: PaymentImg4 },
+    { id: 5, img: PaymentImg5 },
+  ];
 
 function ProductDetails() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [detailsId, setDetalsId] = useState("description");
+  const [ product, setProduct ] = useState({});
+  const { slug } = useParams();
+  const { quantity, dispatch } = useContext(CartContext);
+  const { featuredProduct, deliveryFee } = useContext(DataContext);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await axios.get(`http://127.0.0.1:8000/api/product/${slug}`);
+      if (response.status === 200) {
+        setProduct(response.data.data);
+      }
+    }
+    fetchData();
+  }, [slug]);
+  // embla api starts here
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "center",
@@ -57,7 +74,6 @@ function ProductDetails() {
   const onThumbClick = useCallback(
     (index) => {
       if (!emblaApi || !emblaThumbApi) return;
-      console.log("thumbnail clicked");
       emblaApi.scrollTo(index);
       emblaThumbApi.scrollTo(index);
     },
@@ -80,59 +96,65 @@ function ProductDetails() {
   const scrollNext = () => emblaApi?.scrollNext();
   const scrollPrev = () => emblaApi?.scrollPrev();
 
-  const slide = [
-    { id: 1, image: ProductDetailImg1 },
-    { id: 2, image: ProductDetailImg2 },
-    { id: 3, image: ProductDetailImg3 },
-    { id: 4, image: ProductDetailImg4 },
-    { id: 5, image: ProductDetailImg5 },
-    { id: 6, image: ProductDetailImg6 },
-    { id: 7, image: ProductDetailImg7 },
-    { id: 8, image: ProductDetailImg8 },
-    { id: 9, image: ProductDetailImg9 },
-  ];
+  // embla api ends here
 
-  const paymentPartner = [
-    { id: 1, img: PaymentImg1 },
-    { id: 2, img: PaymentImg2 },
-    { id: 3, img: PaymentImg3 },
-    { id: 4, img: PaymentImg4 },
-    { id: 5, img: PaymentImg5 },
-  ];
-  const { slug } = useParams();
-  const {
-    featuredProduct,
-    dispatch,
-    quantity,
-    productColor,
-    productSize,
-    cartItems,
-  } = useContext(DataContext);
-  const [pPrice, setPPrice] = useState(0);
+
+  // size and collor filter starts
+  const [ selectedColorId, setSelectedColorId ] = useState(null);
+  const [ selectedSizeId, setSelectedSizeId ] = useState(null);
+
+  const availableSizesForColor = (colorId) => {
+    return product.variants.filter( v => v.color_id === colorId ).map(v => v.size_id);
+  };
+
+  const availableColorsForSizes = (sizeId) => {
+    return product.variants.filter( v => v.size_id === sizeId ).map(v => v.color_id);
+  };
+
+  const handleColorSelect = (colorId) => {
+    setSelectedColorId(colorId);
+    const validSizes = availableSizesForColor(colorId);
+    if (selectedSizeId && validSizes.includes(selectedSizeId)) {
+      return ;
+    }
+     setSelectedSizeId(validSizes[0] ?? null);
+  };
+
+  const handleSizeSelect = (sizeId) => {
+    setSelectedSizeId(sizeId);
+    const validColors = availableColorsForSizes(sizeId);
+    if ( selectedColorId && validColors.includes(selectedColorId)) {
+      return;
+    }
+    setSelectedColorId(validColors[0] ?? null);
+  }
+
+  
+  const activeVariant = useMemo(() => {
+    if (!selectedColorId && !selectedSizeId ) return;
+    const selectedVariant = product.variants.find( 
+      v => v.color_id === selectedColorId && v.size_id === selectedSizeId 
+    );
+    return selectedVariant;
+  }, [selectedColorId, selectedSizeId, product.variants]);
+  
+  useEffect(() => {
+    if (!product.variants) return;
+    const first = product.variants.find(v => v.stock > 0) ?? product.variants[0];
+    setSelectedColorId(first.color_id);
+    setSelectedSizeId(first.size_id);
+  }, [product.variants]);
+  // size and collor filter ends
 
   const navigate = useNavigate();
-  const selectedProduct = useMemo(() => {
-    if (!featuredProduct || featuredProduct.length === 0) return null;
-    return featuredProduct?.find((prev) => prev.slug === slug);
-  }, [slug, featuredProduct]);
-
-  const handleProductAdd = ({
-    color,
-    size,
-    quantity,
-    id,
-    productName,
-    img,
-    price,
-    buttonClicked,
-  }) => {
+  
+  const handleProductAdd = ({ color, size, quantity, id, productName, img, price, buttonClicked, variantId }) => {
     if (!color || !size || quantity <= 0) {
       return toast.error("Choose the product color, size and quantity.");
     }
     dispatch({
       type: "products/addToCart",
       payload: {
-        id: uuidV4(),
         productId: id,
         productColor: color,
         productSize: size,
@@ -141,39 +163,18 @@ function ProductDetails() {
         productImage: img,
         productPrice: price,
         subTotal: quantity * price,
-        orderId: `#${uuidV1()}`,
+        variantId,  
       },
     });
-    const productExist = cartItems.filter((items) => items.productId === id);
-
-    if (productExist) {
-      const productFound = productExist.find((item) => item.productColor === color && item.productSize === size ? true : false);
-      // const sizeExist = productExist.productSize === size ? true : false;
-      if (productFound ) {
-        toast.error(`${productFound.productName} already exist in the cart`);
-      } else {
-        toast.success(`${productName} successfully added to the cart`);
-      }
-    } else {
-      toast.success(`${productName} successfully added to the cart`);
-    }
+    
+    toast.success(`${productName} successfully added to the cart`);
 
     if (buttonClicked === "buyNow") {
       navigate("/check-out");
     }
-  };
-  if (!selectedProduct) return null;
 
-  const handlePriceChange = (item) => {
-    dispatch({
-      type: "products/setSize",
-      payload: item,
-    });
-
-    const priceList = selectedProduct.prices;
-    const selectedPrice = priceList.find((curr) => curr.size === item)?.price;
-    setPPrice(selectedPrice);
   };
+
   return (
     <>
       <section
@@ -188,10 +189,10 @@ function ProductDetails() {
             <div className="md:sticky md:top-8 md:self-start md:w-100 mb-6 md:mb-0">
               <div className="overflow-hidden relative group" ref={emblaRef}>
                 <div className="flex md:-ml-4">
-                  {slide.map((item) => (
-                    <div key={item.id} className="flex-[0_0_100%] min-w-0 pl-4">
+                  {product.image?.map((item) => (
+                    <div key={`SLI-${item.id}`} className="flex-[0_0_100%] min-w-0 pl-4">
                       <img
-                        src={item.image}
+                        src={item.image_url}
                         alt="product-details image"
                         className="h-80 md:h-100 w-full object-cover rounded-lg md:rounded-xl"
                       />
@@ -225,9 +226,9 @@ function ProductDetails() {
                 ref={emblaThumbRef}
               >
                 <div className="flex mt-6">
-                  {slide.map((item, index) => (
+                  {product.image?.map((item, index) => (
                     <div
-                      key={item.id}
+                      key={`TUM-${item.id}`}
                       className="min-w-0 pl-[0.8rem] flex-[0_0_33.333%]"
                     >
                       <button
@@ -236,7 +237,7 @@ function ProductDetails() {
                         className={`cursor-pointer ${selectedIndex === index ? "border" : ""} rounded-md`}
                       >
                         <img
-                          src={item.image}
+                          src={item.image_url}
                           alt="product details thumbnails"
                           className="h-26 w-26 object-cover rounded-md"
                         />
@@ -250,7 +251,7 @@ function ProductDetails() {
             <div>
               <div className="flex items-end justify-between mb-3 md:mb-6">
                 <h2 className="text-2xl md:text-5xl tracking-wide md:leading-14 font-semibold">
-                  {selectedProduct.title}
+                  {product.name}
                 </h2>
                 <button
                   data-tooltip-id="add-to-wishlist"
@@ -268,23 +269,28 @@ function ProductDetails() {
                 </Tooltip>
               </div>
               <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6 md:mb-12">
-                <h2 className="text-xl md:text-3xl text-gray-500 tracking-wider">
-                  {selectedProduct.originalPrice ? (
-                    <>
-                      <span className="line-through">
-                        $ {selectedProduct.originalPrice}
-                      </span>{" "}
-                      <span className="text-red-500">
-                        {" "}
-                        $ {pPrice === 0 ? selectedProduct.price : pPrice}
+                <div className="flex items-center gap-4">
+                  <h2 className="text-xl md:text-3xl text-gray-500 tracking-wider">
+                    {product.sale_price > 0 ? (
+                      <>
+                        <span className="line-through">
+                          $ { activeVariant ? activeVariant.price : product.base_price}
+                        </span>{" "}
+                        <span className="text-red-500">
+                          {" "}
+                          $ {activeVariant ? activeVariant.sales_amount : product.sales_amount}
+                        </span>
+                      </>
+                    ) : (
+                      <span>
+                        $ {activeVariant ? activeVariant.price : product.base_price}
                       </span>
-                    </>
-                  ) : (
-                    <span>
-                      $ {pPrice === 0 ? selectedProduct.price : pPrice}
-                    </span>
-                  )}
-                </h2>
+                    )}
+                  </h2>
+                  <div className={`border rounded text-sm font-semibold tracking-wide h-fit w-fit px-2 py-1 text-white ${activeVariant?.stock_status === 'Low Stock' && 'bg-yellow-500 border-yellow-500' || activeVariant?.stock_status === 'In stock' && 'bg-green-500 border-green-500' || activeVariant?.stock_status === 'Out of stock' && 'bg-red-500 border-red-500'}`}>
+                    { activeVariant?.stock_status}
+                  </div>
+                </div>
                 <div className="flex items-center gap-4">
                   <StarRating />
                   <span>(0 reviews)</span>
@@ -293,47 +299,41 @@ function ProductDetails() {
               <div className="mb-6">
                 <p className="text-lg md:text-2xl mb-3">Color:</p>
                 <div className="flex gap-3">
-                  {selectedProduct.color
-                    ? selectedProduct.color.map((item) => (
-                        <>
+                  {product.colors?.map((color) => {
+                          const isAvailable = selectedSizeId ? availableColorsForSizes(selectedSizeId).includes(color.id) : true;
+                         return <>
                           <button
-                            key={item}
-                            data-tooltip-id={item}
-                            onClick={() =>
-                              dispatch({
-                                type: "products/setColor",
-                                payload: item,
-                              })
-                            }
-                            style={{ background: item }}
-                            className={`cursor-pointer transition-transform duration-300 ease-in hover:scale-95 h-10 w-10 rounded-full ${item === productColor ? "border-2" : "border-0"}`}
+                            key={`CLO-${color.id}`}
+                            data-tooltip-id={color.value}
+                            onClick={() => isAvailable && handleColorSelect(color.id)}
+                            style={{ background: color.meta.hex_code }}
+                            className={`h-10 w-10 rounded-full ${selectedColorId === color.id ? "ring-2 ring-offset-2" : ""} ${!isAvailable ? 'cursor-not-allowed  opacity-40' : 'cursor-pointer'}`}
                           ></button>
-                          <Tooltip id={item}>
-                            <span>{item}</span>
+                          <Tooltip id={color.value}>
+                            <span>{color.value}</span>
                           </Tooltip>
                         </>
-                      ))
-                    : ""}
+                        })
+                  }
                 </div>
               </div>
               <div className="mb-6">
                 <p className="text-lg md:text-2xl mb-3">Size:</p>
                 <div className="flex gap-3">
-                  {selectedProduct.size
-                    ? selectedProduct.size.map((item) => (
+                  {product.size?.map((item) => (
                         <>
                           <button
-                            key={item}
-                            data-tooltip-id={item}
-                            onClick={() => handlePriceChange(item)}
-                            className={`flex uppercase items-center justify-center h-10 w-10 md:h-12 md:w-12 ${item === productSize ? "border-3 border-black" : "border border-gray-500"} hover:border-black rounded-md cursor-pointer md:text-lg`}
+                            key={`SZ-${item.id}`}
+                            data-tooltip-id={item.value}
+                            onClick={() => handleSizeSelect(item.id)}
+                            className={`flex uppercase items-center justify-center h-10 w-10  ${selectedSizeId === item.id ? "bg-black text-white" : "border"} rounded-sm cursor-pointer`}
                           >
-                            {item}
+                            {item.value}
                           </button>
-                          <Tooltip id={item}>{item}</Tooltip>
+                          <Tooltip id={item.value}>{item.value}</Tooltip>
                         </>
                       ))
-                    : ""}
+                    }
                 </div>
               </div>
               <div className="mb-6">
@@ -352,7 +352,7 @@ function ProductDetails() {
                       />
                     </button>
                     <span className="text-center">{quantity}</span>
-                    <button
+                    <button 
                       onClick={() => dispatch({ type: "products/addItem" })}
                       className="flex items-center justify-center border-l h-full cursor-pointer"
                     >
@@ -364,17 +364,20 @@ function ProductDetails() {
                     </button>
                   </div>
                   <button
-                    onClick={() =>
+                    onClick={() =>{
+                      const selectedSize = product.size.find(curr => curr.id === selectedSizeId);
+                      const selectedColor = product.colors.find(curr => curr.id === selectedColorId);
                       handleProductAdd({
-                        size: productSize,
-                        color: productColor,
-                        id: selectedProduct.id,
+                        size: selectedSize.value,
+                        color: selectedColor.value,
+                        id: product.id,
                         quantity,
-                        productName: selectedProduct.title,
-                        img: selectedProduct.productImage,
-                        price: pPrice,
-                      })
-                    }
+                        productName: product.name,
+                        img:  product.primary_image.image_url,
+                        price: activeVariant.sales_amount > 0 ? activeVariant.sales_amount : activeVariant.price,
+                        variantId: activeVariant.id,
+                      });
+                    }}
                     className={`col-span-2 md:col-span-3 bg-gray-200 w-full h-full ${quantity <= 0 ? "cursor-not-allowed" : "cursor-pointer"}  flex items-center justify-center text-lg tracking-wide`}
                   >
                     Add to Cart
@@ -382,18 +385,21 @@ function ProductDetails() {
                 </div>
 
                 <button
-                  onClick={() =>
+                  onClick={() => {
+                    const selectedSize = product.size.find(curr => curr.id === selectedSizeId);
+                    const selectedColor = product.colors.find(curr => curr.id === selectedColorId);
                     handleProductAdd({
                       buttonClicked: "buyNow",
-                      size: productSize,
-                      color: productColor,
-                      id: selectedProduct.id,
+                      size: selectedSize.value,
+                      color: selectedColor.value,
+                      id: product.id,
                       quantity,
-                      productName: selectedProduct.title,
-                      img: selectedProduct.productImage,
-                      price: selectedProduct.price,
-                    })
-                  }
+                      productName: product.name,
+                      img: product.primary_image.image_url,
+                      price: activeVariant.sales_amount > 0 ? activeVariant.sales_amount : activeVariant.price,
+                      variantId: activeVariant.id,
+                    });
+                  }}
                   className={`w-full h-12 flex items-center justify-center bg-black text-white ${quantity <= 0 ? "cursor-not-allowed" : "cursor-pointer hover:bg-gray-200 hover:text-black"}  text-xl tracking-wide transition-colors duration-300 ease-in-out`}
                 >
                   Buy Now
@@ -434,11 +440,11 @@ function ProductDetails() {
                     className="h-6 w-6 md:h-8 md:w-8 object-contain"
                   />
                   <p>Free Shipping & return:</p>
-                  <p className="text-gray-500">On all orders over $200.00</p>
+                  <p className="text-gray-500">On all orders over ${ deliveryFee[0]?.free_shipping_threshold}</p>
                 </div>
                 <div className="flex flex-col items-center justify-center gap-4 bg-gray-300 py-3">
                   <div className="grid grid-cols-3 md:flex gap-6">
-                    {paymentPartner.map((item) => (
+                    {PaymentPartner.map((item) => (
                       <img
                         key={item.id}
                         src={item.img}
@@ -488,12 +494,12 @@ function ProductDetails() {
             </button>
           </div>
           {detailsId === "description" && (
-            <Description description={selectedProduct.description} />
+            <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(product.description)}} />
           )}
           {detailsId === "additional" && (
             <AdditionalInfo
-              size={selectedProduct.size}
-              color={selectedProduct.color}
+              size={product.size}
+              color={product.colors}
             />
           )}
           {detailsId === "reviews" && <Review />}
@@ -537,19 +543,20 @@ function AdditionalInfo({ size, color }) {
       <li className="mb-3 text-gray-400">
         Size:{" "}
         {size.map((item) => (
-          <span key={item} className="text-black font-semibold">
-            {item},&nbsp;
+          <span key={`SZ-ARR-${item.id}`} className="text-black font-semibold">
+            {item.value},&nbsp;
           </span>
         ))}
       </li>
       <li className=" text-gray-400">
         Color:{" "}
         {color.map((item) => (
-          <span key={item} className="text-black font-semibold">
-            {item},&nbsp;
+          <span key={`CLR-ARR-${item.id}`} className="text-black font-semibold">
+            {item.value},&nbsp;
           </span>
         ))}
       </li>
     </ul>
   );
 }
+

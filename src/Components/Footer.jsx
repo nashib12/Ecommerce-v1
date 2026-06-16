@@ -51,7 +51,7 @@ function Footer() {
                         <input type="email" className='h-full outline-none text-black' placeholder='Email Address'  />
                         <button className='flex items-center justify-center cursor-pointer'><img src={ArrowRightImg} alt="Right arrow" className='h-5 w-5 object-contain' /></button>
                     </div>
-                    <span className='leading-7 tracking-wide'>* By Signing up here I agree to receive Negastore email newsletter.</span>
+                    <span className='leading-7 tracking-wide'>* By Signing up here I agree to receive Megastore email newsletter.</span>
                     <ul className='mt-6 flex gap-8'>
                         <li><a href="#"><img src={FacebookImg} alt="facebook icon" className='h-5 w-5 object-contain invert' /></a></li>
                         <li><a href="#"><img src={InstagramImg} alt="instagram icon" className='h-5 w-5 object-contain invert' /></a></li>

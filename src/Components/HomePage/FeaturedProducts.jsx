@@ -8,7 +8,7 @@ import ShippingImg from "../../../public/Icons/free-delivery.png";
 import DataContext from "../../Context/DataContext";
 
 function FeaturedProducts() {
-  const { featuredProduct } = useContext(DataContext);
+  const { product } = useContext(DataContext);
   return (
     <section
       id="featured-products"
@@ -27,19 +27,19 @@ function FeaturedProducts() {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
-          {featuredProduct.map((item) => (
-            <div key={item.title}>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-6 gap-x-0 md:px-6 md:pb-12">
+          {product.map((item) => (
+            <div key={`FTR-PRO-${item.id}`}>
               <ProductCard
                 id={item.id}
-                title={item.title}
-                image={item.productImage}
-                coverImage={item.productCover}
-                price={item.price}
-                tag={item.tag}
-                originalPrice={item.originalPrice}
-                discount={item.discount}
+                title={item.name}
+                image={item.primary_image?.image_url}
+                sale_price={item.sales_amount}
+                tag={item.categories?.title}
+                originalPrice={item.base_price}
+                discount={item.sale_price}
                 slug={item.slug}
+                is_featured={item.is_featured}
               />
             </div>
           ))}

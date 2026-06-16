@@ -1,169 +1,44 @@
+import axios from "axios";
 import React, {
   createContext,
   useEffect,
-  useMemo,
-  useReducer,
   useState,
 } from "react";
 
 const DataContext = createContext();
 
-const initialState = {
-  quantity: 1,
-  deliveryCharge: 10,
-  productColor: "",
-  productSize: "",
-  cartItems: [],
-  wishList: [],
-};
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "products/addItem":
-      return { ...state, quantity: state.quantity + 1 };
-    case "products/removeItem":
-      return {
-        ...state,
-        quantity: state.quantity > 0 ? state.quantity - 1 : state.quantity,
-      };
-    case "products/clearItem":
-      return {
-        ...state,
-        cartItems: state.cartItems.filter(
-          (item) => item.id !== action.payload,
-        ),
-      };
-    case "products/setColor":
-      return { ...state, productColor: action.payload };
-    case "products/setSize":
-      return { ...state, productSize: action.payload };
-    case "products/addToCart": {
-      const productExist = state.cartItems.filter(
-        (item) => item.productId === action.payload.productId,
-      );
-      if (productExist) {
-        // const colorExist =
-        //   productExist.productColor === action.payload.productColor
-        //     ? true
-        //     : false;
-        // const sizeExist =
-        //   productExist.productSize === action.payload.productSize
-        //     ? true
-        //     : false;
-        const productFound = productExist.find((item) => item.productColor === action.payload.productColor && item.productSize === action.payload.productSize ? true : false);
-        if (productFound) {
-          return {
-            ...state,
-            // cartItems: state.cartItems.map((item) =>
-            //   item.productId === action.payload.productId
-            //     ? { ...item, quantity: item.quantity + action.payload.quantity }
-            //     : item,
-            // ),
-            quantity: 1,
-            productColor: "",
-            productSize: "",
-          };
-        } else {
-          return {
-            ...state,
-            cartItems: [...state.cartItems, action.payload],
-            quantity: 1,
-            productColor: "",
-            productSize: "",
-          };
-        }
-      } else {
-        return {
-          ...state,
-          cartItems: [...state.cartItems, action.payload],
-          quantity: 1,
-          productColor: "",
-          productSize: "",
-        };
-      }
-    }
-    case "carts/addItem":
-      return {
-        ...state,
-        cartItems: state.cartItems.map((item) => {
-          if (item.id === action.payload) {
-            const newQuantity = item.quantity + 1;
-            return {
-              ...item,
-              quantity: newQuantity,
-              subTotal: newQuantity * item.productPrice,
-            };
-          }
-          return item;
-        }),
-      };
-    case "carts/removeItem":
-      return {
-        ...state,
-        cartItems: state.cartItems.map((item) => {
-          if (item.id === action.payload) {
-            const newQuantity =
-              item.quantity === 0 ? item.quantity : item.quantity - 1;
-            return {
-              ...item,
-              quantity: newQuantity,
-              subTotal: newQuantity * item.productPrice,
-            };
-          }
-          return item;
-        }),
-      };
-    case "wishlist/addItems":
-      return {
-        ...state,
-        wishList: [...state.wishList, action.payload],
-      };
-    case "wishlist/removeItems":
-      return {...state, wishList: state.wishList.filter(curr => curr.id !== action.payload)};
-    default:
-      return state;
-  }
-};
-
 export function ContextProvider({ children }) {
   const [category, setCategory] = useState([]);
   const [popularCategory, setPopularCategory] = useState([]);
   const [trendingWeek, setTrendingWeek] = useState([]);
-  const [weeklyData, setWeeklyData] = useState([]);
   const [featuredProduct, setFeaturedProduct] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const [
-    {
-      quantity,
-      deliveryCharge,
-      cartItems,
-      productColor,
-      productSize,
-      wishList,
-    },
-    dispatch,
-  ] = useReducer(reducer, initialState);
   const [loginModal, setLoginModal] = useState(false);
   const [profileEdit, setProfileEdit] = useState(false);
   const [passwordEdit, setPasswordEdit] = useState(false);
   const [addCategory, setAddCategory] = useState(false);
   const [addProduct, setAddProduct] = useState(false);
   const [updateAddress, setUpdateAddress] = useState(false);
-
-  const subTotal = useMemo(() => {
-    return cartItems.reduce((total, items) => total + items.subTotal, 0);
-  }, [cartItems]);
-
-  const total = useMemo(() => {
-    return subTotal + deliveryCharge;
-  }, [subTotal, deliveryCharge]);
+  const [ product, setPoduct ] = useState([]);
+  const [ deliveryFee, setDeliveryFee ] = useState('');
+  const [ attribute, setAttribute ] = useState([]);
 
   useEffect(() => {
     async function getCategory() {
       try {
-        const response = await fetch("/Data/Category.json");
-        const data = await response.json();
-        setCategory(data);
+        const response = await Promise.allSettled([
+          axios.get('http://127.0.0.1:8000/api/category'),
+          axios.get('http://127.0.0.1:8000/api/product'),
+          axios.get('http://127.0.0.1:8000/api/shipping_fee'),
+          axios.get('http://127.0.0.1:8000/api/attributeValue'),
+          axios.get('http://127.0.0.1:8000/api/featured_product'),
+        ]);
+        const [ categoryRes, productRes, shippingFeeRes, attributeRes, featuredRes ] = response;
+        if( categoryRes.status === 'fulfilled' ) setCategory(categoryRes.value.data.data);
+        if (productRes.status === 'fulfilled' ) setPoduct(productRes.value.data.data.data);
+        if (shippingFeeRes.status === 'fulfilled') setDeliveryFee(shippingFeeRes.value.data.data);
+        if (attributeRes.status === 'fulfilled') setAttribute(attributeRes.value.data.data);
+        if (featuredRes.status === 'fulfilled') setFeaturedProduct(featuredRes.value.data.data.data);
       } catch (error) {
         console.log(error);
       }
@@ -193,53 +68,17 @@ export function ContextProvider({ children }) {
     getTrending();
   }, []);
 
-  useEffect(() => {
-    async function getWeeklyData() {
-      try {
-        const response = await fetch("/Data/WeeklyData.json");
-        const data = await response.json();
-        setWeeklyData(data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getWeeklyData();
-  }, []);
-
-  useEffect(() => {
-    async function getFeaturedData() {
-      try {
-        const response = await fetch("/Data/FeaturedProduct.json");
-        const data = await response.json();
-        setFeaturedProduct(data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getFeaturedData();
-  }, []);
-
   return (
     <DataContext.Provider
       value={{
         category,
         popularCategory,
         trendingWeek,
-        weeklyData,
         featuredProduct,
         openModal,
         setOpenModal,
-        quantity,
-        deliveryCharge,
-        total,
-        dispatch,
-        cartItems,
-        productColor,
-        productSize,
-        subTotal,
         loginModal,
         setLoginModal,
-        wishList,
         profileEdit,
         setProfileEdit,
         passwordEdit,
@@ -250,6 +89,7 @@ export function ContextProvider({ children }) {
         setAddProduct,
         updateAddress,
         setUpdateAddress,
+        product, deliveryFee, attribute
       }}
     >
       {" "}
