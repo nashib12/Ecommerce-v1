@@ -67,7 +67,7 @@ function Cart() {
             You may check out all the available products and buy some in the
             shop
           </p>
-          <Link to={"/all-products"}>
+          <Link to={"/all_products/catalog"}>
             <button className="h-12 md:h-16 w-fit px-4 md:px-8 bg-black text-white transition-colors duration-300 ease-in-out hover:bg-white hover:text-black border cursor-pointer text-xl md:text-2xl tracking-wider font-semibold">
               Return to Shop
             </button>

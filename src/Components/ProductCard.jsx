@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import ProductImg1 from "../../public/Images/ProductImg/card1.webp";
-import ProductImg2 from "../../public/Images/ProductImg/card2.webp";
 import StarImg from "../../public/Icons/star.png";
 import EyeImg from "../../public/Icons/view.png";
 import { Tooltip } from "react-tooltip";
@@ -12,7 +11,6 @@ function ProductCard({
   id,
   title,
   image = ProductImg1,
-  coverImage = ProductImg2,
   sale_price,
   price = "$120",
   tag = "Cardigan",
@@ -45,12 +43,7 @@ function ProductCard({
         <img
           src={image}
           alt="product image"
-          className="mb-3 h-40 md:h-50 w-full object-cover group-hover:hidden"
-        />
-        <img
-          src={coverImage}
-          alt="product image"
-          className="mb-3 h-40 md:h-50 w-full object-cover hidden group-hover:block"
+          className="mb-3 h-40 md:h-50 w-full object-cover"
         />
         <button
           onClick={() => handleAddToWihlist()}

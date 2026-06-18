@@ -30,6 +30,7 @@ import BestSeller from "./Components/Featured/BestSeller";
 import BackInStock from "./Components/Featured/BackInStock";
 import NewArrivals from "./Components/Featured/NewArrivals";
 import { CartProvider } from "./Context/CartContext";
+import ErrorPage from "./Pages/ErrorPage";
 
 
 function App() {
@@ -62,16 +63,13 @@ function Layout() {
             <Route path="/" element={<Home />} />
             <Route path="/product-details/:slug" element={<ProductDetails />} />
             <Route path="/cart-details" element={<Cart />} />
-            <Route path="/all-products" element={<Product />} />
+            <Route path="/all_products/:catalog" element={<Product />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/my-account" element={<UserDashboard />} />
             <Route path="/check-out" element={<Checkout />} />
-            <Route path="/selected-category/" element={<FeaturedProduct />}>
-              <Route path="best-sellers" element={<BestSeller />} />
-              <Route path="back-in-stock" element={<BackInStock />} />
-              <Route path="new-arrivals" element={<NewArrivals />} />
-            </Route>
+            <Route path="/selected_category/:id" element={<FeaturedProduct />}/>
+            <Route path="*" element={<ErrorPage />} />
           </Routes>
           <Footer />
           <ProductModal />

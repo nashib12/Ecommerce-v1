@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import Loader from "../Components/Loader";
 
 const DataContext = createContext();
 
@@ -22,9 +23,11 @@ export function ContextProvider({ children }) {
   const [ product, setPoduct ] = useState([]);
   const [ deliveryFee, setDeliveryFee ] = useState('');
   const [ attribute, setAttribute ] = useState([]);
+  const [ loading, setLoading ] = useState(false);
 
   useEffect(() => {
     async function getCategory() {
+      setLoading(true);
       try {
         const response = await Promise.allSettled([
           axios.get('http://127.0.0.1:8000/api/category'),
@@ -42,6 +45,7 @@ export function ContextProvider({ children }) {
       } catch (error) {
         console.log(error);
       }
+      setLoading(false);
     }
     getCategory();
   }, []);
@@ -67,6 +71,10 @@ export function ContextProvider({ children }) {
     }
     getTrending();
   }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <DataContext.Provider

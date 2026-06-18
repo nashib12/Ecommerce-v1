@@ -13,6 +13,7 @@ import DataContext from "../Context/DataContext";
 import { Link, useLocation } from "react-router-dom";
 import { useLenis } from "lenis/react";
 import CartContext from "../Context/CartContext";
+import PlusIcon from '../../public/Icons/plus.png';
 
 function Navbar() {
   const lanugage = [
@@ -28,6 +29,8 @@ function Navbar() {
   const [categoryMenu, setCategoryMenu] = useState(false);
   const [subcategory, setSubcategory] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileDropdown, setMobileDropdown] = useState('');
+  const [ childDropdown, setChildDropdown ] = useState('');
 
   const { category, setLoginModal } = useContext(DataContext);
   const { cartItems } = useContext(CartContext);
@@ -186,6 +189,7 @@ function Navbar() {
                           subcategory={subcategory}
                           id={item.id}
                           data={item.children}
+                          setCategoryMenu={setCategoryMenu}
                         />
                       ) : (
                         <p className="py-3">{item.title}</p>
@@ -200,19 +204,19 @@ function Navbar() {
                 <Link to={'/'}>Home</Link>
               </li>
               <li>
-                <Link to={'/all-products'} >All Products</Link>
+                <Link to={'/all_products/catalog'} >All Products</Link>
               </li>
               <li>
-                <Link to={'/selected-category/best-sellers'}>Men</Link>
+                <Link to={'/all_products/1'}>For Him</Link>
               </li>
               <li>
-                <Link to={'/selected-category/back-in-stock'} >Women</Link>
+                <Link to={'/all_products/2'} >For Her</Link>
               </li>
               <li>
-                <Link to={'/selected-category/new-arrivals'}>Kids</Link>
+                <Link to={'/all_products/3'}>Kids</Link>
               </li>
               <li>
-                <Link to={'/selected-category/new-arrivals'}>Featured</Link>
+                <Link to={'/all_products/featured'}>Featured</Link>
               </li>
             </ul>
           </div>
@@ -245,7 +249,53 @@ function Navbar() {
           
         </div>
       </nav>
-      {mobileOpen && <aside></aside>}
+      <aside className={`md:hidden fixed top-0 bottom-0 left-0 bg-white w-60 z-995 transform transition-all duration-500 ease-in-out ${mobileOpen ? 'translate-x-0' : '-translate-x-100'} overflow-y-scroll`}>
+          <div className="px-4 pt-6 pb-3 flex items-center justify-between">
+            <h2 className="font-bold text-2xl tracking-wider">
+                  <span className="text-4xl">M</span>egastore
+            </h2>  
+            <button className="h-fit w-fit px-2 py-1 text-xs rounded border" onClick={() => setMobileOpen(false)}>Close</button>
+          </div>
+          <div className="h-0.5 w-full rounded-full bg-black"  /> 
+            <ul className="px-4 py-6">
+              {category.map(item => {
+                const hasParent = item.parent_id;
+                if (!hasParent) {
+                  return (
+                    <>
+                  <li key={`CAT_MOB_${item.id}`} className="py-2">
+                    <div className="w-full">
+                      <div onClick={() => setMobileDropdown(curr => curr === item.title ? '' : item.title)} className="text-lg flex items-center justify-between">
+                        {item.title}
+                        <img src={PlusIcon} alt="plus button icon" className="h-3 w-3 object-contain" />
+                      </div>
+                      { mobileDropdown === item.title && <ul className="ml-1.5 h-fit mt-2 text-md">
+                          {item.children.map(child => (
+                            <li key={`CAT_CHILD_${child.id}`} className="py-2">
+                              <div onClick={() => setChildDropdown(curr => curr === child.title ? '' : child.title)} className="text-lg flex items-center justify-between">
+                                {child.title}
+                                <img src={PlusIcon} alt="plus button icon" className="h-3 w-3 object-contain" />
+                              </div>
+                              { childDropdown === child.title && <ul className="mt-1.5 ml-1.5 h-fit">
+                                  {child.children.map(i => (
+                                    <Link key={`CHILD_SUB_${i.id}`} to={`/selected_category/${i.id}`} onClick={() => {
+                                      setMobileDropdown(''); setChildDropdown(''); setMobileOpen(false);
+                                    }}>
+                                        <li className="py-1.5 text-sm">{ i.title}</li>
+                                    </Link>
+                                  ))}
+                                </ul>}
+                            </li>
+                          ))}
+                        </ul>}
+                    </div>
+                  </li>
+                  </>
+                  )
+                }
+              })}
+            </ul>
+      </aside>
     </>
   );
 }
@@ -298,7 +348,7 @@ function DropdownMenu({
   );
 }
 
-function SubcategoryMenu({ value, subcategory, id, data }) {
+function SubcategoryMenu({ value, subcategory, id, data, setCategoryMenu }) {
     const [childDropdown, setChildDropdown ] = useState('');
   return (
     <div className="relative py-3">
@@ -316,7 +366,7 @@ function SubcategoryMenu({ value, subcategory, id, data }) {
             <li key={item.id} className="px-3 hover:bg-gray-300">
               { item.children.length > 0 ? (
                 <div className="relative" onMouseEnter={() => setChildDropdown(item.id)} onMouseLeave={() => setChildDropdown('')}>
-                  <div className="flex items-center justify-between cursor-pointer py-3" >
+                  <div className="flex items-center justify-between cursor-pointer py-3 " >
                     { item.title }
                     <img src={NextImg} className="h-4 w-4 object-contain" />
                   </div>
@@ -325,7 +375,9 @@ function SubcategoryMenu({ value, subcategory, id, data }) {
                       <div className="absolute top-0 left-full w-6 h-full" />
                       <ul className="absolute top-0 left-full bg-gray-100 w-60 ml-3.5">
                         { item.children.map(i => (
-                          <li key={`sub-cat-${i.id}`} className="px-3 py-3 hover:bg-gray-300">{i.title}</li>
+                          <Link to={`/selected_category/${i.id}`} onClick={() => setCategoryMenu('')}>
+                            <li key={`sub-cat-${i.id}`} className="px-3 py-3 hover:bg-gray-300" >{i.title}</li>
+                          </Link>
                         ))}
                       </ul>
                     </>

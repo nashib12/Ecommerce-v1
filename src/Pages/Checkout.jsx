@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Checkout() {
     const { deliveryFee } = useContext(DataContext);
-    const { cartItems, calculatedTotal, subTotal, discount, couponCode, dispatch } = useContext(CartContext);
+    const { cartItems, calculatedTotal, subTotal, discount, couponCode, dispatch, setDiscount } = useContext(CartContext);
 
     useEffect(() => {
         async function checkCartStatus () {
@@ -55,6 +55,7 @@ function Checkout() {
             if (response.status === 200) {
                 toast.success(response.data.message);
                 dispatch({ type: "carts/clearCart"});
+                setDiscount(0);
                 navigate('/');
             }
         } catch (error) {

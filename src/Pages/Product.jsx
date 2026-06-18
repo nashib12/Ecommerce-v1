@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DataContext from "../Context/DataContext";
 import PlusIcon from "../../public/Icons/plus.png";
 import MinusIcon from "../../public/Icons/minus.png";
@@ -8,10 +8,25 @@ import GridIcon from "../../public/Icons/grid.png";
 import ProductCard from "../Components/ProductCard";
 import usePagination from "../Components/Hooks/usePagination";
 import Pagination from "../Components/Pagination";
+import { useParams } from "react-router-dom";
+import Loader from "../Components/Loader";
 
 function Product() {
   const { category, attribute } = useContext(DataContext);
-  const { data: product, currentPage, lastPage, total, fetchPage, perPage } = usePagination('http://127.0.0.1:8000/api/product')
+  const { catalog } = useParams();
+  const [ url, setUrl ] = useState();
+
+  useEffect(() => {
+    if (catalog === "featured") {
+      setUrl("http://127.0.0.1:8000/api/filtered/featured_product")
+    } else if (catalog === 'catalog') {
+      setUrl("http://127.0.0.1:8000/api/product");
+    } else {
+      setUrl(`http://127.0.0.1:8000/api/filtered_category/${catalog}`);
+    }
+  }, [catalog]);
+
+  const { data: product, currentPage, lastPage, total, fetchPage, perPage, loading } = usePagination(url)
   const [ filter, setFilter ] = useState('category');
   const [dropdown, setDropdown] = useState(false);
   const sortingList = [
@@ -31,6 +46,10 @@ function Product() {
     "$180 - $239",
     "$240+",
   ];
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <section
@@ -60,7 +79,7 @@ function Product() {
                 {category.map((item) => {
                   const hasParent = item.parent_id ? item.parent_id : null;
                   return (hasParent === null && <li
-                    key={`CAT-${item.id}`}
+                    key={`CAT-${item.id}`} onClick={() => setUrl(`http://127.0.0.1:8000/api/filtered_category/${item.id}`)}
                     className={`py-2 px-4 cursor-pointer hover:bg-gray-200`}
                   >
                     {item.title}
@@ -86,7 +105,7 @@ function Product() {
             </div>
             { filter === 'color' && <ul className="mt-3">
                 { attribute.color.map(item => 
-                  <li key={`ATTR-CLR-${item.id}`} className={`py-2 px-4 cursor-pointer hover:bg-gray-200 flex items-center gap-2`}><div className="h-6 w-6 rounded-full" style={{ backgroundColor : `${item.meta.hex_code}`}} />{item.value}</li>
+                  <li key={`ATTR-CLR-${item.id}`} onClick={() => setUrl(`http://127.0.0.1:8000/api/filtered_color/${item.id}`)} className={`py-2 px-4 cursor-pointer hover:bg-gray-200 flex items-center gap-2`}><div className="h-6 w-6 rounded-full" style={{ backgroundColor : `${item.meta.hex_code}`}} />{item.value}</li>
                 )}
               </ul>}
           </div>
@@ -107,7 +126,7 @@ function Product() {
             </div>
             { filter === 'sizes' && <ul className="mt-3">
                 { attribute.sizes.map(item => 
-                  <li key={`ATTR-SIZE-${item.id}`} className={`py-2 px-4 cursor-pointer hover:bg-gray-200`}>{item.value}</li>
+                  <li key={`ATTR-SIZE-${item.id}`} onClick={() => setUrl(`http://127.0.0.1:8000/api/filtered_color/${item.id}`)} className={`py-2 px-4 cursor-pointer hover:bg-gray-200`}>{item.value}</li>
                 )}
               </ul>}
           </div>

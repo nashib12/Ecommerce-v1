@@ -26,12 +26,12 @@ import Review from "../Components/ProductDetails/Review";
 import Questions from "../Components/ProductDetails/Questions";
 import { useNavigate, useParams } from "react-router-dom";
 import DataContext from "../Context/DataContext";
-import { v4 as uuidV4, v1 as uuidV1 } from "uuid";
 import { toast } from "react-toastify";
 import ProductCard from "../Components/ProductCard";
 import axios from "axios";
 import DOMPurify from 'dompurify'
 import CartContext from "../Context/CartContext";
+import Loader from "../Components/Loader";
 
 
  const PaymentPartner = [
@@ -49,16 +49,20 @@ function ProductDetails() {
   const { slug } = useParams();
   const { quantity, dispatch } = useContext(CartContext);
   const { featuredProduct, deliveryFee } = useContext(DataContext);
+  const [ loading, setLoading ] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       const response = await axios.get(`http://127.0.0.1:8000/api/product/${slug}`);
       if (response.status === 200) {
         setProduct(response.data.data);
       }
+      setLoading(false);
     }
     fetchData();
   }, [slug]);
+
   // embla api starts here
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
@@ -174,6 +178,10 @@ function ProductDetails() {
     }
 
   };
+
+  if(loading) {
+     return<Loader />;
+  }
 
   return (
     <>
@@ -299,7 +307,7 @@ function ProductDetails() {
               <div className="mb-6">
                 <p className="text-lg md:text-2xl mb-3">Color:</p>
                 <div className="flex gap-3">
-                  {product.colors?.map((color) => {
+                  { product.colors?.length !== 0 && product.colors?.map((color) => {
                           const isAvailable = selectedSizeId ? availableColorsForSizes(selectedSizeId).includes(color.id) : true;
                          return <>
                           <button
@@ -320,7 +328,7 @@ function ProductDetails() {
               <div className="mb-6">
                 <p className="text-lg md:text-2xl mb-3">Size:</p>
                 <div className="flex gap-3">
-                  {product.size?.map((item) => (
+                  {product.siz?.length !== 0 && product.size?.map((item) => (
                         <>
                           <button
                             key={`SZ-${item.id}`}
