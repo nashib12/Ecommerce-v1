@@ -1,18 +1,16 @@
-import axios from "axios";
 import React, {
   createContext,
   useEffect,
   useState,
 } from "react";
 import Loader from "../Components/Loader";
+import { useQuery } from "@tanstack/react-query";
+import api from "../lib/axios";
 
 const DataContext = createContext();
 
 export function ContextProvider({ children }) {
-  const [category, setCategory] = useState([]);
-  const [popularCategory, setPopularCategory] = useState([]);
   const [trendingWeek, setTrendingWeek] = useState([]);
-  const [featuredProduct, setFeaturedProduct] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [loginModal, setLoginModal] = useState(false);
   const [profileEdit, setProfileEdit] = useState(false);
@@ -20,48 +18,31 @@ export function ContextProvider({ children }) {
   const [addCategory, setAddCategory] = useState(false);
   const [addProduct, setAddProduct] = useState(false);
   const [updateAddress, setUpdateAddress] = useState(false);
-  const [ product, setPoduct ] = useState([]);
-  const [ deliveryFee, setDeliveryFee ] = useState('');
-  const [ attribute, setAttribute ] = useState([]);
-  const [ loading, setLoading ] = useState(false);
 
-  useEffect(() => {
-    async function getCategory() {
-      setLoading(true);
-      try {
-        const response = await Promise.allSettled([
-          axios.get('http://127.0.0.1:8000/api/category'),
-          axios.get('http://127.0.0.1:8000/api/product'),
-          axios.get('http://127.0.0.1:8000/api/shipping_fee'),
-          axios.get('http://127.0.0.1:8000/api/attributeValue'),
-          axios.get('http://127.0.0.1:8000/api/featured_product'),
-        ]);
-        const [ categoryRes, productRes, shippingFeeRes, attributeRes, featuredRes ] = response;
-        if( categoryRes.status === 'fulfilled' ) setCategory(categoryRes.value.data.data);
-        if (productRes.status === 'fulfilled' ) setPoduct(productRes.value.data.data.data);
-        if (shippingFeeRes.status === 'fulfilled') setDeliveryFee(shippingFeeRes.value.data.data);
-        if (attributeRes.status === 'fulfilled') setAttribute(attributeRes.value.data.data);
-        if (featuredRes.status === 'fulfilled') setFeaturedProduct(featuredRes.value.data.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-      setLoading(false);
-    }
-    getCategory();
-  }, []);
+  const { data : category = [] , isPending: categoryPending} = useQuery({
+    queryKey : ['categories'],
+    queryFn: () => api.get('/category').then(response => response.data.data),
+  });
 
-  useEffect(() => {
-    async function getPopularCategory() {
-      try {
-        const response = await fetch("/Data/PopularCategory.json");
-        const data = await response.json();
-        setPopularCategory(data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getPopularCategory();
-  }, []);
+  const { data : product = [], isPending: productPending } = useQuery({
+    queryKey: ['products'],
+    queryFn: () => api.get('/product').then(response => response.data.data.data),
+  });
+
+  const { data: deliveryFee = '', isPending: deliveryFeePending } = useQuery({
+    queryKey: ['deliveryFee'],
+    queryFn: () => api.get('/shipping_fee').then(response => response.data.data),
+  });
+
+  const { data: attribute = [], isPending: attributePending } = useQuery({
+    queryKey: ['attribute'],
+    queryFn : () => api.get('/attributeValue').then(response => response.data.data),
+  });
+
+  const { data: featuredProduct = [], isPending: featuredProductPending } = useQuery({
+    queryKey: ['products', 'featured'],
+    queryFn : () => api.get('/featured_product').then(response => response.data.data.data),
+  });
 
   useEffect(() => {
     async function getTrending() {
@@ -72,7 +53,9 @@ export function ContextProvider({ children }) {
     getTrending();
   }, []);
 
-  if (loading) {
+  const loading = categoryPending || productPending || deliveryFeePending || attributePending || featuredProductPending;
+  
+  if (loading ) {
     return <Loader />;
   }
 
@@ -80,7 +63,6 @@ export function ContextProvider({ children }) {
     <DataContext.Provider
       value={{
         category,
-        popularCategory,
         trendingWeek,
         featuredProduct,
         openModal,

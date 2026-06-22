@@ -28,10 +28,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import DataContext from "../Context/DataContext";
 import { toast } from "react-toastify";
 import ProductCard from "../Components/ProductCard";
-import axios from "axios";
 import DOMPurify from 'dompurify'
 import CartContext from "../Context/CartContext";
 import Loader from "../Components/Loader";
+import { useQuery } from "@tanstack/react-query";
+import api from "../lib/axios";
 
 
  const PaymentPartner = [
@@ -45,23 +46,15 @@ import Loader from "../Components/Loader";
 function ProductDetails() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [detailsId, setDetalsId] = useState("description");
-  const [ product, setProduct ] = useState({});
   const { slug } = useParams();
   const { quantity, dispatch } = useContext(CartContext);
   const { featuredProduct, deliveryFee } = useContext(DataContext);
-  const [ loading, setLoading ] = useState(false);
 
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      const response = await axios.get(`http://127.0.0.1:8000/api/product/${slug}`);
-      if (response.status === 200) {
-        setProduct(response.data.data);
-      }
-      setLoading(false);
-    }
-    fetchData();
-  }, [slug]);
+  const { data: product = [], isPending: loading, isError } = useQuery({
+    queryKey: ['products', slug],
+    queryFn: () => api.get(`/product/${slug}`).then(response => response.data.data),
+    enabled: !!slug,
+  });
 
   // embla api starts here
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -101,7 +94,6 @@ function ProductDetails() {
   const scrollPrev = () => emblaApi?.scrollPrev();
 
   // embla api ends here
-
 
   // size and collor filter starts
   const [ selectedColorId, setSelectedColorId ] = useState(null);
@@ -181,6 +173,9 @@ function ProductDetails() {
 
   if(loading) {
      return<Loader />;
+  }
+  if (isError) {
+    return <p>Product not found</p>;
   }
 
   return (
