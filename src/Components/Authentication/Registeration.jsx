@@ -1,65 +1,64 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import EyeImg from "../../../public/Icons/view.png";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
+import { toast } from "react-toastify";
+import CloseButtonIcon from '../../../public/Icons/close.png'
 
 function Registeration() {
+  const { registeration, user} = useAuth();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
+    reset, resetField
   } = useForm();
-
-  const currPassword = watch("password", "");
+  
+  const currPassword = watch("password");
   const [password, setPassword] = useState("password");
   const [cPassword, setCPassword] = useState("password");
-
-  const onSubmit = (data) => {
-    window.alert(data);
+  
+  if (user) return <Navigate to={'/'} replace />
+  const onSubmit = async (data) => {
+    try {
+      await registeration(data.name, data.email, data.password, data.password_confirmation, data.terms);
+      reset();
+      toast.success('Account created successfully.');
+      return <Navigate to={'/'} replace />
+    } catch (error) {
+      toast.error(error.response?.data.message || 'Registratin error try again!!!');
+      resetField('password');
+      resetField('password_confirmation');
+    }
   };
+
+ 
   return (
-    <div className="md:px-8 md:py-12 w-full flex flex-col items-center justify-center">
+    <div className="md:px-8 md:py-12 w-full flex flex-col items-center justify-center relative">
       <h2 className="tracking-wider text-3xl font-semibold mb-6">
         User Registration
       </h2>
+      <Link to={'/'}>
+        <button className="absolute top-4 right-4 cursor-pointer">
+          <img src={CloseButtonIcon} alt="close button icon" className="h-6 w-6 object-contain" />
+        </button>
+      </Link>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div>
-            <input
-              type="text"
-              className="border-b outline-none py-2 text-lg h-12 w-full mb-1"
-              placeholder="Enter First Name"
-              {...register("fName", { required: "First Name is required" })}
-            />
-            {errors.fName && (
-              <p className="text-sm text-red-600">{errors.fName.message}</p>
-            )}
-          </div>
-          <div>
-            <input
-              type="text"
-              className="border-b outline-none py-2 text-lg h-12 w-full mb-1"
-              placeholder="Enter Last Name"
-              {...register("lName", { required: "Last Name is required" })}
-            />
-            {errors.lName && (
-              <p className="text-sm text-red-600">{errors.lName.message}</p>
-            )}
-          </div>
-        </div>
         <input
           type="text"
           className="border-b outline-none py-2 text-lg h-12 w-full mb-1"
-          placeholder="Enter Username"
-          {...register("username", {
-            required: "Username is required",
+          placeholder="Enter full name"
+          {...register("name", {
+            required: "Full name is required",
             minLength: {
               value: 8,
               message: "Username must be 8 characters at minimum",
             },
           })}
         />
+        {errors.name && <p className="text-sm text-red-600">* {errors.name.message}</p>}
         <input
           type="email"
           className="border-b outline-none py-2 text-lg h-12 w-full mb-1 mt-6"
@@ -113,8 +112,8 @@ function Registeration() {
             type={cPassword}
             className="border-b outline-none py-2 text-lg h-12 w-full mb-1"
             placeholder="Enter confirm password"
-            {...register("cPassword", {
-              required: "Password is required",
+            {...register("password_confirmation", {
+              required: "Confirm password is required",
               minLength: {
                 value: 8,
                 message: "Password must be 8 characters at minimum",
@@ -128,8 +127,8 @@ function Registeration() {
                 value === currPassword || "Password do not match.",
             })}
           />
-          {errors.cPassword && (
-            <p className="text-sm text-red-600">{errors.cPassword.message}</p>
+          {errors.password_confirmation && (
+            <p className="text-sm text-red-600">{errors.password_confirmation.message}</p>
           )}
           <button
             className="absolute top-1/2 -translate-y-1/2 right-2 cursor-pointer"

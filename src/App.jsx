@@ -34,19 +34,23 @@ import ErrorPage from "./Pages/ErrorPage";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { AuthProvider } from "./Context/AuthContext";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ContextProvider>
-        <CartProvider>
-          <ReactLenis root options={{ duration: 1.3, smoothWheel: true }}>
-            <BrowserRouter>
-              <Layout />
-              <ToastContainer />
-            </BrowserRouter>
-          </ReactLenis>
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <ReactLenis root options={{ duration: 1.3, smoothWheel: true }}>
+              <BrowserRouter>
+                <Layout />
+                <ToastContainer />
+              </BrowserRouter>
+            </ReactLenis>
+          </CartProvider>
+        </AuthProvider>
       </ContextProvider>
       <ReactQueryDevtools initialIsOpen={true} position="right" />
     </QueryClientProvider>
@@ -66,15 +70,23 @@ function Layout() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/product-details/:slug" element={<ProductDetails />} />
+            <Route path="/product-details/:slug/:category?" element={<ProductDetails />} />
             <Route path="/cart-details" element={<Cart />} />
             <Route path="/all_products/:catalog" element={<Product />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/contact-us" element={<ContactUs />} />
-            <Route path="/my-account" element={<UserDashboard />} />
-            <Route path="/check-out" element={<Checkout />} />
+            <Route path="/my-account" element={
+              <ProtectedRoute>
+                <UserDashboard />
+              </ProtectedRoute>
+              } />
+            <Route path="/check-out" element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+              } />
             <Route
-              path="/selected_category/:id"
+              path="/selected_category/:title"
               element={<FeaturedProduct />}
             />
             <Route path="*" element={<ErrorPage />} />
@@ -93,14 +105,18 @@ function Layout() {
               <Route path="user-registration" element={<Registeration />} />
               <Route path="user-login" element={<UserLogin />} />
             </Route>
-            <Route
+            {/* <Route
               path="/authentication/admin/dashboard"
-              element={<AdminDashboard />}
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="/authentication/admin-login"
               element={<AdminLogin />}
-            />
+            /> */}
           </Routes>
           <AddCategory />
           <AddProduct />

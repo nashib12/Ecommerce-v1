@@ -6,19 +6,29 @@ import EyeIcon from "../../../public/Icons/view.png";
 import CloseIcon from "../../../public/Icons/close.png";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
+import { toast } from "react-toastify";
 
 function LoginModal() {
+  const { login, user } = useAuth();
   const { loginModal, setLoginModal } = useContext(DataContext);
   const lenis = useLenis();
   const [passwordType, setPasswordType] = useState("password");
   const {
     register,
-    handleSubmit,
+    handleSubmit, reset, resetField,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    window.alert(data);
+  const onSubmit = async (data) => {
+     try {
+        await login(data.email, data.password);
+        toast.success("Successfully logged in.");
+        reset();
+    } catch (error) {
+      toast.error(error.response?.data.message || 'Something went wrong try again.');
+      resetField('password');
+    }
   };
 
   useEffect(() => {
@@ -35,7 +45,7 @@ function LoginModal() {
     };
   }, [loginModal, lenis]);
 
-  if (!loginModal) return null;
+  if (!loginModal || user ) return null;
   return createPortal(
     <section className="bg-black/40 fixed top-0 left-0 right-0 bottom-0 z-999">
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white shadow-sm w-fit h-fit  rounded-xl">
@@ -57,23 +67,19 @@ function LoginModal() {
             <input
               type="text"
               className="outline-none h-12 border-b text-lg w-60 md:w-100 mb-1"
-              placeholder="Enter username or email"
-              {...register("username", {
-                required : "Username or Email required."
+              placeholder="Enter your email"
+              {...register("email", {
+                required : "Email is required."
               })}
             />
-            {errors.username && <p className="text-red-700 text-sm">{errors.username.message}</p>}
+            {errors.email && <p className="text-red-700 text-sm">{errors.email.message}</p>}
             <div className="relative h-12 my-6">
               <input
                 type={passwordType}
                 className="outline-none h-full border-b text-lg w-60 md:w-100 mb-1"
                 placeholder="Enter your password"
                 {...register("password", {
-                    required: "Password is required.",
-                    minLength: {
-                        value: 8,
-                        message : "Password should be 8 characters at minimum."
-                    }
+                    required: "Password is required."
                 })}
               />
               <button
@@ -99,7 +105,7 @@ function LoginModal() {
             </div>
             <button type="submit" className="h-12 w-full bg-black text-white mb-6 cursor-pointer text-lg tracking-wider rounded-sm transition-color duration-300 ease-in-out hover:bg-white hover:text-black border">Log In</button>
           </form>
-            <p className="text-center">Don't have a account yet? <Link to={'/authentication/user-registration'}  className="font-semibold text-blue-600">Sign up</Link> for free.</p>
+            <p className="text-center">Don't have a account yet? <Link onClick={() => setLoginModal(false)} to={'/authentication/user-registration'}  className="font-semibold text-blue-600">Sign up</Link> for free.</p>
         </div>
       </div>
     </section>,

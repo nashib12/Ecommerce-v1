@@ -33,6 +33,7 @@ import CartContext from "../Context/CartContext";
 import Loader from "../Components/Loader";
 import { useQuery } from "@tanstack/react-query";
 import api from "../lib/axios";
+import { useAuth } from "../Context/AuthContext";
 
 
  const PaymentPartner = [
@@ -46,15 +47,26 @@ import api from "../lib/axios";
 function ProductDetails() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [detailsId, setDetalsId] = useState("description");
-  const { slug } = useParams();
+  const { slug, category } = useParams();
   const { quantity, dispatch } = useContext(CartContext);
-  const { featuredProduct, deliveryFee } = useContext(DataContext);
+  const { deliveryFee } = useContext(DataContext);
+  const { user, mutateWishlist } = useAuth();
 
-  const { data: product = [], isPending: loading, isError } = useQuery({
+  const { data: product = [], isPending: loading, isError: detailError } = useQuery({
     queryKey: ['products', slug],
     queryFn: () => api.get(`/product/${slug}`).then(response => response.data.data),
     enabled: !!slug,
   });
+
+  const { data: relatedProduct = [], isPending: productPending, isError: productError} = useQuery({
+    queryKey: ['products', slug, category],
+    queryFn: () => api.get(`http://127.0.0.1:8000/api/filtered_category/${category}`).then(response => response.data.data.data),
+    enabled: !!category,
+  })
+
+  useEffect(() => {
+    dispatch({ type: 'reset/quantity'});
+  }, []);
 
   // embla api starts here
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -171,10 +183,20 @@ function ProductDetails() {
 
   };
 
-  if(loading) {
+  const handleAddToWishlist = (id) => {
+    const formdata = new FormData();
+    formdata.append('product_id', id);
+    if(user) {
+      mutateWishlist.mutate({ formdata });
+    } else {
+      toast.error("You must be logged in to add product to wihslist.");
+    }
+  }
+
+  if(loading || productPending) {
      return<Loader />;
   }
-  if (isError) {
+  if (detailError || productError) {
     return <p>Product not found</p>;
   }
 
@@ -257,6 +279,7 @@ function ProductDetails() {
                   {product.name}
                 </h2>
                 <button
+                  onClick={() => handleAddToWishlist(product.id)}
                   data-tooltip-id="add-to-wishlist"
                   data-tooltip-place="left"
                   className="cursor-pointer bg-white shadow-sm h-8 w-8 md:h-10 md:w-10 rounded-full flex items-center justify-center group hover:bg-black transition-colors duration-300 ease-in-out "
@@ -517,18 +540,19 @@ function ProductDetails() {
       >
         <h2 className="text-3xl font-semibold tracking-wide mb-12">Related Products</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-0 md:gap-6">
-          {featuredProduct.slice(0, 4).map((item) => (
-            <div key={item.id}>
+          {relatedProduct.length > 0 && relatedProduct.slice(0, 4).map((item) => (
+            <div key={`FTR-PRO-${item.id}`}>
               <ProductCard
                 id={item.id}
-                title={item.title}
-                image={item.itemImage}
-                coverImage={item.itemCover}
-                price={item.price}
-                tag={item.tag}
-                originalPrice={item.originalPrice}
-                discount={item.discount}
+                title={item.name}
+                image={item.primary_image?.image_url}
+                sale_price={item.sales_amount}
+                tag={item.categories?.title}
+                originalPrice={item.base_price}
+                discount={item.sale_price}
                 slug={item.slug}
+                is_featured={item.is_featured}
+                catId={item.categories?.id}
               />
             </div>
           ))}

@@ -11,6 +11,7 @@ const usePagination = ( url ) => {
     const [ loading, setLoading ] = useState(false);
 
     const fetchPage = useCallback(async (page) => {
+        if(!url) return;
         setLoading(true);
         try {
             const response = await axios.get(url, {
@@ -24,7 +25,8 @@ const usePagination = ( url ) => {
                 setPerPage(response.data.data.to)
             }
         } catch (error) {
-            toast.error(error.response?.data?.message ?? 'Something went wrong.');
+            toast.error( 'Something went wrong 123.');
+            console.log(error);
         }
         setLoading(false)
     }, [url]);

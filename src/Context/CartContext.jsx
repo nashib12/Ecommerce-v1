@@ -65,6 +65,8 @@ const reducer = (state, action) => {
     case "carts/clearCart" : 
         localStorage.removeItem('cart');
         return {...state, cartItems: [], quantity: 1};
+    case "reset/quantity" :
+      return {...state, quantity: 1};
     default:
       return state;
   }
@@ -81,6 +83,7 @@ export function CartProvider ({ children }) {
     const [ calculatedTotal, setCalculatedTotal ] = useState(0);
     const [ discount, setDiscount ] = useState(0);
      const [ couponCode, setCouponCode ] = useState('');
+    const [ cartDetail, setCartDetail ] = useState({});
 
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cartItems));
@@ -104,7 +107,7 @@ export function CartProvider ({ children }) {
 
     return (
         <CartContext.Provider value={{quantity, cartItems, calculatedTotal, dispatch, subTotal, discount, setDiscount, setCalculatedTotal,
-          couponCode, setCouponCode
+          couponCode, setCouponCode, cartDetail, setCartDetail,
         }}>
             { children }
         </CartContext.Provider>

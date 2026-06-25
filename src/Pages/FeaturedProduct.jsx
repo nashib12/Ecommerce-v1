@@ -13,11 +13,11 @@ import Loader from "../Components/Loader";
 
 function FeaturedProduct() {
   const { category, attribute } = useContext(DataContext);
-  const { id } = useParams();
+  const { slug } = useParams();
   const[ url, setUrl ] = useState('');
   useEffect(() => {
-    setUrl(`http://127.0.0.1:8000/api/filtered_product/${id}`);
-  }, [id]);
+    setUrl(`http://127.0.0.1:8000/api/filtered_product/${slug}`);
+  }, [slug]);
  
   const { data: product, currentPage, lastPage, total, fetchPage, perPage, loading } = usePagination(url);
   const [ filter, setFilter ] = useState('category');

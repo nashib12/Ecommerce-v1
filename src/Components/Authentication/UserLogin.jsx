@@ -1,33 +1,53 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import EyeIcon from "../../../public/Icons/view.png";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
+import { toast } from "react-toastify";
+import CloseButtonIcon from '../../../public/Icons/close.png'
 
 function UserLogin() {
+  const {login, user} = useAuth();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }, reset, resetField,
   } = useForm();
   const [passwordType, setPasswordType] = useState("password");
-
-  const onSubmit = (data) => {
-    window.alert(data);
+  if (user) {
+    return <Navigate to={'/'} replace />
   };
+
+  const onSubmit = async (data) => {
+    try {
+        await login(data.email, data.password);
+        toast.success("Successfully logged in.");
+        reset();
+    } catch (error) {
+      toast.error(error.response?.data.message || 'Something went wrong try again.');
+      resetField('password');
+    }
+  };
+
   return (
-    <div className="md:px-6 md:py-12 w-full flex flex-col items-center justify-center">
+    <div className="md:px-6 md:py-12 w-full flex flex-col items-center justify-center relative">
       <h2 className="tracking-wider text-3xl font-semibold mb-6">Sign In</h2>
+      <Link to={'/'}>
+       <button className="absolute top-4 right-4 h-6 w-6 cursor-pointer">
+          <img src={CloseButtonIcon} alt="close button icon" className="h-6 w-6 object-contain" />
+        </button>
+      </Link>
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
-          type="text"
+          type="email"
           className="outline-none h-12 border-b text-lg w-60 md:w-100 mb-1"
-          placeholder="Enter username or email"
-          {...register("username", {
-            required: "Username or Email required.",
+          placeholder="Enter your email"
+          {...register("email", {
+            required: "Email is required.",
           })}
         />
-        {errors.username && (
-          <p className="text-red-700 text-sm">{errors.username.message}</p>
+        {errors.email && (
+          <p className="text-red-700 text-sm">{errors.email.message}</p>
         )}
         <div className="relative h-12 my-6">
           <input
@@ -36,10 +56,6 @@ function UserLogin() {
             placeholder="Enter your password"
             {...register("password", {
               required: "Password is required.",
-              minLength: {
-                value: 8,
-                message: "Password should be 8 characters at minimum.",
-              },
             })}
           />
           <button

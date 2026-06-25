@@ -10,21 +10,17 @@ import MenuImg from "../../public/Icons/menu.png";
 import NextImg from "../../public/Icons/next.png";
 import { useContext } from "react";
 import DataContext from "../Context/DataContext";
-import { Link, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { useLenis } from "lenis/react";
 import CartContext from "../Context/CartContext";
 import PlusIcon from '../../public/Icons/plus.png';
+import { useAuth } from "../Context/AuthContext";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 function Navbar() {
-  const lanugage = [
-    { id: "EN", title: "English" },
-    { id: "NP", title: "Nepali" },
-  ];
-  const currency = [
-    { id: "USD", title: "USD" },
-    { id: "NPR", title: "NPR" },
-    { id: "GBP", title: "GBP" },
-  ];
+  const { user, logout } = useAuth();
   const [dropdown, setDropdown] = useState(false);
   const [categoryMenu, setCategoryMenu] = useState(false);
   const [subcategory, setSubcategory] = useState(false);
@@ -36,11 +32,23 @@ function Navbar() {
   const { cartItems } = useContext(CartContext);
   const location = useLocation();
   const lenis = useLenis();
-
+  const { handleSubmit } = useForm();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     lenis?.scrollTo(0);
   }, [location]);
+
+  const onSubmit = async () => {
+    try {
+      await logout();
+      queryClient.clear();
+      toast.success("Successfully log out.");
+      return <Navigate to={'/'} replace />
+    } catch (error) {
+      toast.error(error.response?.data.message || "Something went wrong. Try again.")
+    }
+  }
 
   return (
     <>
@@ -57,25 +65,6 @@ function Navbar() {
                 </p>
               </div>
               <div className="hidden md:flex gap-6 items-center">
-                <DropdownMenu
-                  dropdown={dropdown}
-                  setDropdown={setDropdown}
-                  id="language"
-                  data={lanugage}
-                  defaultText="English"
-                  customProp="w-28 h-fit py-2 bg-black text-white"
-                  invert="invert"
-                />
-                <DropdownMenu
-                  dropdown={dropdown}
-                  setDropdown={setDropdown}
-                  id="currency"
-                  data={currency}
-                  defaultText="USD"
-                  customProp="w-22 h-fit py-2 bg-black text-white"
-                  invert="invert"
-                />
-
                 <a href="#" target="blank">
                   <img
                     src={FacebookImg}
@@ -153,11 +142,19 @@ function Navbar() {
                   className="h-9 w-9 0bject-contain"
                 />
                 </Link>
-                {cartItems.length === 0 ? "" : (<div className="absolute -top-2 -right-2 bg-red-600 h-6 w-6 flex items-center justify-center rounded-full text-sm text-white">{cartItems.length}</div>)}
+                {cartItems.length === 0 ? "" : (<div className="absolute -top-2 -right-2 bg-red-600 h-6 w-6 flex items-center justify-center rounded-full text-sm text-white">{Object.values(cartItems).reduce(( sum, item) => sum + item.quantity, 0)}</div>)}
               </div>
+              { user ? (
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <button type='submit' className="w-28 h-11 border uppercase tracking-wider bg-black text-white cursor-pointer">
+                    Logout
+                  </button>
+                </form>
+              ) : (
                 <button onClick={() => {setLoginModal(true)}} className="w-28 h-11 border uppercase tracking-wider bg-black text-white cursor-pointer">
                   Login
                 </button>
+              )}
               </div>
             </div>
           </div>
@@ -375,7 +372,7 @@ function SubcategoryMenu({ value, subcategory, id, data, setCategoryMenu }) {
                       <div className="absolute top-0 left-full w-6 h-full" />
                       <ul className="absolute top-0 left-full bg-gray-100 w-60 ml-3.5">
                         { item.children.map(i => (
-                          <Link to={`/selected_category/${i.id}`} onClick={() => setCategoryMenu('')}>
+                          <Link to={`/selected_category/${i.slug}`} onClick={() => setCategoryMenu('')}>
                             <li key={`sub-cat-${i.id}`} className="px-3 py-3 hover:bg-gray-300" >{i.title}</li>
                           </Link>
                         ))}

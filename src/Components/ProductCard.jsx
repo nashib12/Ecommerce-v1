@@ -1,37 +1,35 @@
-import React, { useContext } from "react";
+import React from "react";
 import ProductImg1 from "../../public/Images/ProductImg/card1.webp";
 import StarImg from "../../public/Icons/star.png";
 import EyeImg from "../../public/Icons/view.png";
 import { Tooltip } from "react-tooltip";
 import { Link } from "react-router-dom";
-import DataContext from "../Context/DataContext";
 import { toast } from "react-toastify";
+import { useAuth } from "../Context/AuthContext";
 
 function ProductCard({
   id,
   title,
   image = ProductImg1,
   sale_price,
-  price = "$120",
-  tag = "Cardigan",
+  tag ,
   originalPrice,
   discount,
-  slug, is_featured
+  slug, is_featured, catId
 }) {
-  const { dispatch, wishList } = useContext(DataContext);
-  const date = new Date();
 
-  const handleAddToWihlist = () => {
-    const productExists = wishList.find(curr => curr.id === id) 
-    if(productExists) {
-      return toast.error(`${title}. Already exists in wishlist.`);
+
+  const { user, mutateWishlist } = useAuth();
+
+  const handleAddtoWishlist = (id ) => {
+    const formdata = new FormData();
+    formdata.append('product_id', id)
+    if(user) {
+      mutateWishlist.mutate({ formdata });
     } else {
-      dispatch({type: "wishlist/addItems", payload: {id, title, image, slug, price, date: `${date.getDay()}-${date.getMonth()}-${date.getFullYear()}`}});
-      toast.success(`${title}. Successfully added to the wishlist.`);
-      return;
+      toast.error("You must be logged in to add product to wishlist.");
     }
   }
-
   return (
     <div className="h-fit md:h-106 w-fit md:w-60 border-2 border-gray-300 md:px-2 py-2">
       <div className="relative group cursor-pointer overflow-hidden">
@@ -46,7 +44,7 @@ function ProductCard({
           className="mb-3 h-40 md:h-50 w-full object-cover"
         />
         <button
-          onClick={() => handleAddToWihlist()}
+          onClick={() => handleAddtoWishlist(id)}
           data-tooltip-id={`wishlist-${id}`}
           className="absolute top-4 right-2 hidden h-9 w-9 rounded-full bg-white group-hover:flex items-center justify-center cursor-pointer"
         >
@@ -94,7 +92,7 @@ function ProductCard({
         ) : (
           <span className="md:text-xl tracking-wide">$ {originalPrice}</span>
         )}
-        <Link to={`/product-details/${slug}`}>
+        <Link to={`/product-details/${slug}/${catId}`}>
         <button className="w-full h-9 md:h-12 text-sm md:text-md bg-gray-200 mt-3 cursor-pointer transition-colors duration-150 ease-in-out hover:bg-black hover:text-white">
           View Details
         </button></Link>

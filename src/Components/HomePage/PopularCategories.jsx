@@ -21,7 +21,11 @@ function PopularCategories() {
         <div className='bg-gray-100 border-2 border-gray-200'>
             <div className='py-6 md:py-12 px-6 flex flex-col gap-3 md:flex-row items-center md:justify-between'>
                 <h2 className='text-2xl font-semibold'>Popular Categories</h2>
-                <button className='flex cursor-pointer items-center md:justify-center gap-1 md:gap-2 transition-color duration-300 ease-in-out hover:text-gray-400 md:text-lg group'>View All Categories <img src={ArrowRight} alt="right arrow icon" className='h-3 w-3 md:h-4 md:w-4 object-contain transition-all duration-300 ease-in-out group-hover:invert-75' /> </button>
+                <Link to={'/all_products/catalog'}>
+                    <button className='flex cursor-pointer items-center md:justify-center gap-1 md:gap-2 transition-color duration-300 ease-in-out hover:text-gray-400 md:text-lg group'>
+                        View All Categories <img src={ArrowRight} alt="right arrow icon" className='h-3 w-3 md:h-4 md:w-4 object-contain transition-all duration-300 ease-in-out group-hover:invert-75' /> 
+                    </button>
+                </Link>
             </div>
             <div className='relative px-16'>
                 <button className='absolute top-1/2 -translate-y-1/2 left-3 cursor-pointer h-fit w-fit rounded-full p-3 border z-99' onClick={() => goPrev()}> <img src={ArrowRightIcon} alt='arrow right icon' className='h-5 w-5 object-contain' /></button>

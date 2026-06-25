@@ -8,10 +8,13 @@ import PlusIcon from "../../../public/Icons/plus.png";
 import MinusIcon from "../../../public/Icons/minus.png";
 import CartContext from "../../Context/CartContext";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { toast } from "react-toastify";
+import authAPi from "../../lib/authAxios";
+import { useAuth } from "../../Context/AuthContext";
 
 function Cart() {
+  const { setLoginModal } = useContext(DataContext);
+  const { user } = useAuth(); 
   const { cartItems, dispatch, subTotal, calculatedTotal, setCalculatedTotal, discount, setDiscount, setCouponCode } = useContext(CartContext);
   const { deliveryFee } = useContext(DataContext);
   const { register, handleSubmit, formState: {errors}, setError } = useForm({
@@ -30,9 +33,14 @@ function Cart() {
         name: item.productName,
       }))
     }
+    if(!user) {
+      toast.error("You must be logged in. To apply coupon.");
+      setLoginModal(true);
+      return;
+    }
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/coupon', payload);
+      const response = await authAPi.post('/coupon', payload);
       if (response.status === 200) {
         toast.success(response.data.message);
         setCalculatedTotal(response.data.data.total);

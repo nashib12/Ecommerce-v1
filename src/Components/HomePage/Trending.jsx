@@ -6,6 +6,7 @@ import NextImg from '../../../public/Icons/next.png'
 import BannerImg from '../../../public/Images/Banner/banner4.webp'
 import ProductCard from '../ProductCard'
 import DataContext from '../../Context/DataContext'
+import { Link } from 'react-router-dom'
 
 function Trending() {
     const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -48,7 +49,9 @@ function Trending() {
                 <div className='absolute left-0 bottom-6 px-6 py-6 w-60'>
                     <h2 className='text-2xl font-semibold tracking-wide mb-3'>What is Trending This Week</h2>
                     <p className='text-lg mb-6'>100% Leather Handmade</p>
-                    <button className='cursor-pointer bg-white flex items-center justify-center h-12 w-36 font-semibold tracking-wider uppercase'>Shop Now</button>
+                    <Link to={'/all_products/featured'}>
+                        <button className='cursor-pointer bg-white flex items-center justify-center h-12 w-36 font-semibold tracking-wider uppercase'>Shop Now</button>
+                    </Link>
                 </div>
             </div>
             <div className='grid grid-cols-2 md:grid-cols-3 md:gap-6'>
@@ -64,6 +67,7 @@ function Trending() {
                             discount={item.sale_price}
                             slug={item.slug}
                             is_featured={item.is_featured}
+                            catId={item.categories?.id}
                         />
                     </div>
                 ))}

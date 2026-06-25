@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import DataContext from "../../Context/DataContext";
 import { Link } from "react-router-dom";
 import ProductImg from "../../../public/Images/ProductImg/card1.webp";
+import CartContext from "../../Context/CartContext";
 
 function ShoppingCart({ setDashboardNavigation }) {
-  const { cartItems } = useContext(DataContext);
+  const { cartItems, setCartDetail } = useContext(CartContext);
   const date = new Date();
   return (
     <div>
@@ -15,7 +15,7 @@ function ShoppingCart({ setDashboardNavigation }) {
         <div>
           <p className="md:text-lg">
             There is no item in your cart.{" "}
-            <Link to={"/all-products"} className="text-blue-600">
+            <Link to={"/all_products/catalog"} className="text-blue-600">
               Continue Shopping
             </Link>{" "}
           </p>
@@ -23,10 +23,11 @@ function ShoppingCart({ setDashboardNavigation }) {
       ) : (
         <>
           <div className="hidden md:block">
-            <table className="table-fixed w-full">
+            <table className="table-auto w-full">
               <thead>
                 <tr className="h-16 border-y">
-                  <th className="border-x">Order No.</th>
+                  <th className="border-x">S.n.</th>
+                  <th className="border-r">Product Name</th>
                   <th className="border-r">Date</th>
                   <th className="border-r">Status</th>
                   <th className="border-r">Total</th>
@@ -34,9 +35,10 @@ function ShoppingCart({ setDashboardNavigation }) {
                 </tr>
               </thead>
               <tbody>
-                {cartItems.map(item => (
+                {cartItems.map((item , index)=> (
                 <tr key={item.id} className="h-16 border-b text-center">
-                  <td className="border-x">{item.orderId}</td>
+                  <td className="border-x">{index + 1}</td>
+                  <td className="border-r">{ item.productName}</td>
                   <td className="border-r">{ `${date.getDay()}-${date.getMonth()}-${date.getFullYear()}`}</td>
                   <td className="border-r">
                     <span className="text-yellow-500">Pending</span>
@@ -44,7 +46,10 @@ function ShoppingCart({ setDashboardNavigation }) {
                   <td className="border-r">$ {item.subTotal.toFixed(2)}</td>
                   <td className="border-r">
                     <button
-                      onClick={() => setDashboardNavigation("order-details")}
+                      onClick={() => {
+                        setDashboardNavigation("order-details");
+                        setCartDetail(item);
+                      }}
                       className="text-blue-600 cursor-pointer"
                     >
                       View Details

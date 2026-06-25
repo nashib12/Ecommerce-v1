@@ -6,6 +6,7 @@ import CustomerSupportImg from "../../../public/Icons/headphones.png";
 import CreditCardImg from "../../../public/Icons/credit-card.png";
 import ShippingImg from "../../../public/Icons/free-delivery.png";
 import DataContext from "../../Context/DataContext";
+import { Link } from "react-router-dom";
 
 function FeaturedProducts() {
   const { product } = useContext(DataContext);
@@ -17,14 +18,16 @@ function FeaturedProducts() {
       <div className="bg-gray-100 border-2 border-gray-200 mb-6 md:mb-12">
         <div className="px-6 py-6 md:py-12 flex flex-col md:flex-row gap-3 items-center md:justify-between">
           <h2 className="text-2xl font-semibold">Featured Products</h2>
-          <button className="flex cursor-pointer items-center md:justify-center gap-1 md:gap-2 transition-color duration-300 ease-in-out hover:text-gray-400 md:text-lg group">
-            View All Categories{" "}
-            <img
-              src={ArrowRight}
-              alt="right arrow icon"
-              className="h-3 w-3 md:h-4 md:w-4 object-contain transition-all duration-300 ease-in-out group-hover:invert-75"
-            />{" "}
-          </button>
+          <Link to={'/all_products/catalog'}>
+            <button className="flex cursor-pointer items-center md:justify-center gap-1 md:gap-2 transition-color duration-300 ease-in-out hover:text-gray-400 md:text-lg group">
+              View all products{" "}
+              <img
+                src={ArrowRight}
+                alt="right arrow icon"
+                className="h-3 w-3 md:h-4 md:w-4 object-contain transition-all duration-300 ease-in-out group-hover:invert-75"
+              />{" "}
+            </button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-y-6 gap-x-0 md:px-6 md:pb-12">
@@ -40,6 +43,7 @@ function FeaturedProducts() {
                 discount={item.sale_price}
                 slug={item.slug}
                 is_featured={item.is_featured}
+                catId={item.categories?.id}
               />
             </div>
           ))}

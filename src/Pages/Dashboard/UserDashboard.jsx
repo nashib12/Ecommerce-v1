@@ -11,17 +11,21 @@ import ShoppingCart from '../../Components/UserDashboard/ShoppingCart'
 import Wishlist from '../../Components/UserDashboard/Wishlist'
 import { Link } from 'react-router-dom'
 import OrderDetails from '../../Components/UserDashboard/OrderDetails'
+import { useAuth } from '../../Context/AuthContext'
+import OrderList from '../../Components/UserDashboard/OrderList'
 
 function UserDashboard() {
     const [ dashboardNavigation, setDashboardNavigation ] = useState("user-profile");
     const [ dropdown, setDropdown ] = useState("profile");
+    const { profile, user } = useAuth();
+    if (!user ) return; 
   return (
     <section id='user-dashboard' className='max-w-7xl mx-auto px-6 py-6 md:px-12 md:py-12'>
         <div className='hidden md:grid grid-cols-12 border-2 border-gray-400 rounded-2xl'>
             <div className='col-span-3 border-r border-gray-400'>
-                <div className='flex flex-col items-center justify-center py-6'>
-                <img src={ProfileImg} alt="profile picture default" className='h-36 w-36 object-cover rounded-full' />
-                <h2 className='text-2xl font-semibold tracking-wide '>Username</h2>
+                <div className='flex flex-col items-center justify-center py-6 gap-3'>
+                <img src={profile?.image_url ?? ProfileImg} alt="profile picture default" className='h-24 w-24 object-cover rounded-full' />
+                <h2 className='text-2xl font-semibold tracking-wide '>{ profile?.users?.name ?? 'Full Name'}</h2>
                 </div>
                 <div className='border-t border-gray-400 px-6 pt-6 flex flex-col gap-4'>
                     <div className='flex items-center gap-3 cursor-pointer mb-6' onClick={() => setDashboardNavigation("user-profile")}>
@@ -40,12 +44,11 @@ function UserDashboard() {
                         <img src={WishlistIcon} alt="wishlist icon" className='h-7 w-7 object-contain' />
                         <h3 className='text-2xl tracking-wide text-gray-400'>My Wishlist</h3>
                     </div>
-                    <Link to={'/authentication/user-login'}>
-                    <div className='flex items-center gap-3 cursor-pointer mb-6'>
-                        <img src={LogoutIcon} alt="logout icon" className='h-6 w-6 object-contain' />
-                        <h3 className='text-2xl tracking-wide text-gray-400'>Log Out</h3>
+                    <div className='flex items-center gap-3 cursor-pointer mb-6' onClick={() => setDashboardNavigation("orders")}>
+                        <img src={CartIcon} alt="wishlist icon" className='h-7 w-7 object-contain' />
+                        <h3 className='text-2xl tracking-wide text-gray-400'>My Orders</h3>
                     </div>
-                    </Link>
+            
                 </div>
             </div>
             <div className='col-span-9 px-12 py-12'>
@@ -53,6 +56,7 @@ function UserDashboard() {
                 { dashboardNavigation === "address-book" &&  <AddressBook />}
                 { dashboardNavigation === "shopping-cart" &&  <ShoppingCart setDashboardNavigation={setDashboardNavigation} />}
                 { dashboardNavigation === "wishlist" &&  <Wishlist />}
+                { dashboardNavigation === "orders" &&  <OrderList />}
                 {dashboardNavigation === "order-details" && <OrderDetails setDashboardNavigation={setDashboardNavigation} />}
 
             </div>
@@ -95,12 +99,6 @@ function UserDashboard() {
                 </div>
                 {dropdown === "wishlist" && <Wishlist />}
             </div>
-             <Link to={'/authentication/user-login'}>
-            <div className='px-6 pt-6 flex items-center gap-2 cursor-pointer'>
-                    <img src={LogoutIcon} alt="logout icon" className='h-6 w-6  object-contain' />
-                    <h3 className='tracking-wide font-semibold '>Log Out</h3>
-            </div>
-            </Link>
         </div>
     </section>
   )

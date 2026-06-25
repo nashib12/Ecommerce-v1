@@ -13,11 +13,11 @@ export function ContextProvider({ children }) {
   const [trendingWeek, setTrendingWeek] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [loginModal, setLoginModal] = useState(false);
-  const [profileEdit, setProfileEdit] = useState(false);
   const [passwordEdit, setPasswordEdit] = useState(false);
   const [addCategory, setAddCategory] = useState(false);
   const [addProduct, setAddProduct] = useState(false);
-  const [updateAddress, setUpdateAddress] = useState(false);
+  const [ updateData, setUpdateData ] = useState(null);
+  const [ modal, setModal ] = useState('');
 
   const { data : category = [] , isPending: categoryPending} = useQuery({
     queryKey : ['categories'],
@@ -69,17 +69,14 @@ export function ContextProvider({ children }) {
         setOpenModal,
         loginModal,
         setLoginModal,
-        profileEdit,
-        setProfileEdit,
         passwordEdit,
         setPasswordEdit,
         addCategory,
         setAddCategory,
         addProduct,
         setAddProduct,
-        updateAddress,
-        setUpdateAddress,
-        product, deliveryFee, attribute
+        product, deliveryFee, attribute, updateData, setUpdateData,
+        modal, setModal
       }}
     >
       {" "}
