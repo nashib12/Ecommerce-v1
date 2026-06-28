@@ -13,18 +13,18 @@ import Loader from "../Components/Loader";
 
 function Product() {
   const { category, attribute } = useContext(DataContext);
-  const { catalog } = useParams();
+  const { slug } = useParams();
   const [ url, setUrl ] = useState();
-
+  console.log("product",slug)
   useEffect(() => {
-    if (catalog === "featured") {
+    if (slug === "featured-products") {
       setUrl("http://127.0.0.1:8000/api/filtered/featured_product")
-    } else if (catalog === 'catalog') {
+    } else if (slug === 'all-products') {
       setUrl("http://127.0.0.1:8000/api/product");
     } else {
-      setUrl(`http://127.0.0.1:8000/api/filtered_category/${catalog}`);
+      setUrl(`http://127.0.0.1:8000/api/filtered_product/${slug}`);
     }
-  }, [catalog]);
+  }, [slug]);
 
   const { data: product, currentPage, lastPage, total, fetchPage, perPage, loading } = usePagination(url)
   const [ filter, setFilter ] = useState('category');
@@ -79,7 +79,7 @@ function Product() {
                 {category.map((item) => {
                   const hasParent = item.parent_id ? item.parent_id : null;
                   return (hasParent === null && <li
-                    key={`CAT-${item.id}`} onClick={() => setUrl(`http://127.0.0.1:8000/api/filtered_category/${item.id}`)}
+                    key={`CAT-${item.id}`} onClick={() => setUrl(`http://127.0.0.1:8000/api/filtered_product/${item.slug}`)}
                     className={`py-2 px-4 cursor-pointer hover:bg-gray-200`}
                   >
                     {item.title}
@@ -241,7 +241,7 @@ function ProdcutList({ item }) {
         discount={item.sale_price}
         slug={item.slug}
         is_featured={item.is_featured}
-        catId={item.categories?.id}
+        catId={item.categories?.slug}
       />
     </div>
   );

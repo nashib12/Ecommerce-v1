@@ -53,16 +53,18 @@ function ProductDetails() {
   const { user, mutateWishlist } = useAuth();
 
   const { data: product = [], isPending: loading, isError: detailError } = useQuery({
-    queryKey: ['products', slug],
+    queryKey: ['product-detail', slug],
     queryFn: () => api.get(`/product/${slug}`).then(response => response.data.data),
     enabled: !!slug,
+    staleTime: 0,
   });
 
   const { data: relatedProduct = [], isPending: productPending, isError: productError} = useQuery({
-    queryKey: ['products', slug, category],
-    queryFn: () => api.get(`http://127.0.0.1:8000/api/filtered_category/${category}`).then(response => response.data.data.data),
+    queryKey: ['related-products', category],
+    queryFn: () => api.get(`http://127.0.0.1:8000/api/filtered_product/${category}`).then(response => response.data.data.data),
     enabled: !!category,
-  })
+    staleTime: 0,
+  });
 
   useEffect(() => {
     dispatch({ type: 'reset/quantity'});
@@ -139,19 +141,21 @@ function ProductDetails() {
 
   
   const activeVariant = useMemo(() => {
-    if (!selectedColorId && !selectedSizeId ) return;
+    if(loading) return
+    if (!selectedColorId && !selectedSizeId) return;
     const selectedVariant = product.variants.find( 
       v => v.color_id === selectedColorId && v.size_id === selectedSizeId 
     );
     return selectedVariant;
-  }, [selectedColorId, selectedSizeId, product.variants]);
+  }, [selectedColorId, selectedSizeId, product.variants, loading]);
   
   useEffect(() => {
+    if (loading) return;
     if (!product.variants) return;
     const first = product.variants.find(v => v.stock > 0) ?? product.variants[0];
     setSelectedColorId(first.color_id);
     setSelectedSizeId(first.size_id);
-  }, [product.variants]);
+  }, [product.variants, loading]);
   // size and collor filter ends
 
   const navigate = useNavigate();
@@ -193,7 +197,7 @@ function ProductDetails() {
     }
   }
 
-  if(loading || productPending) {
+  if(loading && productPending) {
      return<Loader />;
   }
   if (detailError || productError) {
@@ -552,7 +556,7 @@ function ProductDetails() {
                 discount={item.sale_price}
                 slug={item.slug}
                 is_featured={item.is_featured}
-                catId={item.categories?.id}
+                catId={item.categories?.slug}
               />
             </div>
           ))}

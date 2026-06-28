@@ -67,7 +67,7 @@ function Trending() {
                             discount={item.sale_price}
                             slug={item.slug}
                             is_featured={item.is_featured}
-                            catId={item.categories?.id}
+                            catId={item.categories?.slug}
                         />
                     </div>
                 ))}

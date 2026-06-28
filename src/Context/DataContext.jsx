@@ -18,6 +18,7 @@ export function ContextProvider({ children }) {
   const [addProduct, setAddProduct] = useState(false);
   const [ updateData, setUpdateData ] = useState(null);
   const [ modal, setModal ] = useState('');
+  const [ newsLetterModal, setNewsLetterModal ] = useState(false);
 
   const { data : category = [] , isPending: categoryPending} = useQuery({
     queryKey : ['categories'],
@@ -76,7 +77,7 @@ export function ContextProvider({ children }) {
         addProduct,
         setAddProduct,
         product, deliveryFee, attribute, updateData, setUpdateData,
-        modal, setModal
+        modal, setModal, newsLetterModal, setNewsLetterModal,
       }}
     >
       {" "}

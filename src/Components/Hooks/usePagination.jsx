@@ -30,7 +30,7 @@ const usePagination = ( url ) => {
         }
         setLoading(false)
     }, [url]);
-
+    console.log(url);
     useEffect(() => { fetchPage(1); }, [fetchPage]);
   return {data, currentPage, lastPage, total, fetchPage, perPage, loading};
 }

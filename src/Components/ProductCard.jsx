@@ -92,7 +92,7 @@ function ProductCard({
         ) : (
           <span className="md:text-xl tracking-wide">$ {originalPrice}</span>
         )}
-        <Link to={`/product-details/${slug}/${catId}`}>
+        <Link to={`/product-details/${catId}/${slug}`}>
         <button className="w-full h-9 md:h-12 text-sm md:text-md bg-gray-200 mt-3 cursor-pointer transition-colors duration-150 ease-in-out hover:bg-black hover:text-white">
           View Details
         </button></Link>

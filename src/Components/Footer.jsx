@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import ArrowRightImg from '../../public/Icons/paper-plane.png'
 import FacebookImg from '../../public/Icons/facebook.png'
 import InstagramImg from '../../public/Icons/instagram.png'
@@ -10,8 +10,11 @@ import PaymentLogo3 from '../../public/Images/Logo/mastercard.svg'
 import PaymentLogo4 from '../../public/Images/Logo/esewa.png'
 import PaymentLogo5 from '../../public/Images/Logo/khalti.png'
 import { Link } from 'react-router-dom'
+import DataContext from '../Context/DataContext'
 
 function Footer() {
+    const { setNewsLetterModal } = useContext(DataContext);
+
   return (
     <footer className='bg-black w-full'>
         <div className='max-w-7xl mx-auto px-6 py-6 md:py-12 md:px-12'>
@@ -33,7 +36,7 @@ function Footer() {
                         <li className='mb-3 cursor-pointer'><a href="/#">Track Order</a></li>
                         <li className='mb-3 cursor-pointer'><a href="/#">Shop</a></li>
                         <li className='mb-3 cursor-pointer'><a href="/#">Wishlist</a></li>
-                        <li className='mb-3 cursor-pointer'><a href="/#">Returns/Exchnage</a></li>
+                        <li className='mb-3 cursor-pointer'><a href="/#">Returns/Exchange</a></li>
                     </ul>
                 </div>
                 <div>
@@ -47,11 +50,12 @@ function Footer() {
                 </div>
                 <div>
                     <h3 className='text-2xl mb-5 uppercase tracking-wide'>Newsletter</h3>
-                    <div className='flex border-8 h-12 bg-white mb-3 w-full justify-between px-2'>
-                        <input type="email" className='h-full outline-none text-black' placeholder='Email Address'  />
-                        <button className='flex items-center justify-center cursor-pointer'><img src={ArrowRightImg} alt="Right arrow" className='h-5 w-5 object-contain' /></button>
-                    </div>
-                    <span className='leading-7 tracking-wide'>* By Signing up here I agree to receive Megastore email newsletter.</span>
+                    <button onClick={() => setNewsLetterModal(true)} className='flex border-8 h-12 bg-white mb-6 w-full items-center justify-between cursor-pointer'>
+                        <div className='h-full text-black w-3/4 flex items-center justify-center'> <span>Click here to subscribe </span></div>
+                        <div className='w-1/4 h-full flex items-center justify-center'>
+                            <img src={ArrowRightImg} alt="Right arrow" className='h-5 w-5 object-contain' />
+                        </div>
+                    </button>
                     <ul className='mt-6 flex gap-8'>
                         <li><a href="#"><img src={FacebookImg} alt="facebook icon" className='h-5 w-5 object-contain invert' /></a></li>
                         <li><a href="#"><img src={InstagramImg} alt="instagram icon" className='h-5 w-5 object-contain invert' /></a></li>

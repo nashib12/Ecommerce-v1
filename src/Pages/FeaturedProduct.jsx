@@ -72,7 +72,7 @@ function FeaturedProduct() {
                 {category.map((item) => {
                   const hasParent = item.parent_id ? item.parent_id : null;
                   return (hasParent === null && <li
-                    key={`CAT-${item.id}`} onClick={() => setUrl(`http://127.0.0.1:8000/api/filtered_category/${item.id}`)}
+                    key={`CAT-${item.id}`} onClick={() => setUrl(`http://127.0.0.1:8000/api/filtered_product/${item.slug}`)}
                     className={`py-2 px-4 cursor-pointer hover:bg-gray-200`}
                   >
                     {item.title}
@@ -204,12 +204,20 @@ function FeaturedProduct() {
           </div>
 
           {/* product list */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-0 md:gap-6 ">
-             { product?.map(item => (
-              <ProdcutList item={item} />
-             ))}
-             
-          </div>
+          {/* <div>
+             { slug ? product.map(item => {
+              return <div key={`PROD-${item.id}`} className="grid grid-cols-2 md:grid-cols-3 gap-0 md:gap-6 ">
+                {item.product.map(i => <CategoryItemList tag={item.title} item={i} catId={item.id} />)}
+              </div>
+             } ) : 
+             <div className="grid grid-cols-2 md:grid-cols-3 gap-0 md:gap-6 ">
+                  {product.map(item =>( <ProdcutList item={item} />))}
+             </div> 
+             }
+          </div> */}
+             <div className="grid grid-cols-2 md:grid-cols-3 gap-0 md:gap-6 ">
+                  {product.map(item =>( <ProdcutList item={item} />))}
+             </div> 
           <div className="flex items-center justify-center mt-4">
             <Pagination currentPage={currentPage} lastPage={lastPage} onPageChange={fetchPage} /> 
           </div>
@@ -234,7 +242,27 @@ function ProdcutList({ item }) {
         discount={item.sale_price}
         slug={item.slug}
         is_featured={item.is_featured}
+        catId={item.categories?.slug}
       />
     </div>
   );
+}
+
+function CategoryItemList ({ item, tag, catId }) {
+  return (
+    <div>
+        <ProductCard
+          id={item.id}
+          title={item.name}
+          image={item.primary_image?.image_url}
+          sale_price={item.sales_amount}
+          tag={tag}
+          originalPrice={item.base_price}
+          discount={item.sale_price}
+          slug={item.slug}
+          is_featured={item.is_featured}
+          catId={catId}
+        />
+    </div>
+  )
 }

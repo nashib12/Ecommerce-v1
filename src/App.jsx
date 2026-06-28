@@ -36,6 +36,9 @@ import { queryClient } from "./lib/queryClient";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthProvider } from "./Context/AuthContext";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import NewsLetterModal from "./Components/Modal/NewsLetterModal";
+import NewsLetterVerify from "./Pages/NewsLetterVerify";
+import NewsLetterUnsubscribe from "./Pages/NewsLetterUnsubscribe";
 
 function App() {
   return (
@@ -70,9 +73,9 @@ function Layout() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/product-details/:slug/:category?" element={<ProductDetails />} />
+            <Route path="/product-details/:category/:slug" element={<ProductDetails />} />
             <Route path="/cart-details" element={<Cart />} />
-            <Route path="/all_products/:catalog" element={<Product />} />
+            <Route path="/all_products/:slug" element={<Product />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/my-account" element={
@@ -86,10 +89,12 @@ function Layout() {
               </ProtectedRoute>
               } />
             <Route
-              path="/selected_category/:title"
+              path="/selected_category/:slug"
               element={<FeaturedProduct />}
             />
             <Route path="*" element={<ErrorPage />} />
+            <Route path="/newsletter/verify/:token" element={<NewsLetterVerify />} />
+            <Route path="/newsletter/unsubscribe/:token" element={<NewsLetterUnsubscribe />} />
           </Routes>
           <Footer />
           <ProductModal />
@@ -97,6 +102,7 @@ function Layout() {
           <ProfileEditModal />
           <ChangePasswordModal />
           <AddressModal />
+          <NewsLetterModal />
         </>
       ) : (
         <>

@@ -39,7 +39,7 @@ function PopularCategories() {
                                     <div className='bg-black/40 absolute inset-0 rounded-md transition-colors duration-200 ease-in-out group-hover:bg-black/20' />
                                     <div className='absolute inset-0 flex flex-col justify-end gap-3 items-center py-6'>
                                         <h2 className='text-3xl font-semibold tracking-wider text-white'>{ item.title}</h2>
-                                        <Link to={`/all_products/${item.id}`}>
+                                        <Link to={`/all_products/${item.slug}`}>
                                             <button className='h-12 w-fit px-4 border border-black cursor-pointer bg-black text-white rounded'>Shop now</button>
                                         </Link>
                                     </div>

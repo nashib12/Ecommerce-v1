@@ -201,19 +201,19 @@ function Navbar() {
                 <Link to={'/'}>Home</Link>
               </li>
               <li>
-                <Link to={'/all_products/catalog'} >All Products</Link>
+                <Link to={'/all_products/all-products'} >All Products</Link>
               </li>
               <li>
-                <Link to={'/all_products/1'}>For Him</Link>
+                <Link to={'/all_products/for-him'}>For Him</Link>
               </li>
               <li>
-                <Link to={'/all_products/2'} >For Her</Link>
+                <Link to={'/all_products/for-her'} >For Her</Link>
               </li>
               <li>
-                <Link to={'/all_products/3'}>Kids</Link>
+                <Link to={'/all_products/kids'}>Kids</Link>
               </li>
               <li>
-                <Link to={'/all_products/featured'}>Featured</Link>
+                <Link to={'/all_products/featured-products'}>Featured</Link>
               </li>
             </ul>
           </div>
